@@ -1,2 +1,1 @@
-# kmaitreys.github.io
-Personal website.
+# Personal website
