@@ -1,0 +1,7 @@
+baseURL = 'https://kmaitreys.github.io/'
+languageCode = 'en-us'
+title = 'S. Maitrey'
+enableGitInfo = true
+
+[markup.goldmark.renderer]
+unsafe = true
