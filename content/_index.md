@@ -16,6 +16,8 @@ I have worked as a project fellow at School of Earth and Planetary Sciences, NIS
 
 Currently I am studying planet-disk interactions and disk substructures to better understand the observational signatures produced by still-forming planets that we can observe from facilities like ALMA and JWST.
 
+I will be starting my PhD at the Kavli Institute for Astronomy and Astrophysics at Peking University in Fall 2026.
+
 ## Research Interests
 
 - Protoplanetary disk modeling
