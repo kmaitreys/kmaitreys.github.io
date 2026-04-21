@@ -1,0 +1,35 @@
+{{ define "main" }}
+<table class="header">
+  <tr>
+    <td colspan="2" rowspan="2" class="width-auto">
+      <h1 class="title">{{ .Title }}</h1>
+    </td>
+    <th class="width-min">Updated</th>
+    <td class="width-min"><time>{{ .Lastmod.Format "2006-01-02" }}</time></td>
+  </tr>
+  <tr>
+    <td colspan="2" class="width-min">
+      <button class="theme-toggle">Switch Theme</button>
+    </td>
+  </tr>
+  <tr>
+    <th class="width-min">Links</th>
+    <td colspan="3" class="width-auto">
+      <a href="{{ "" | relURL }}">Home</a> /
+      <a href="{{ "posts" | relURL }}">All Posts</a>
+    </td>
+  </tr>
+</table>
+
+<main>
+  {{ .Content }}
+  <ul class="posts">
+    {{ range .Pages }}
+    <li>
+      <time>{{ .Date.Format "2006-01-02" }}</time> — 
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    </li>
+    {{ end }}
+  </ul>
+</main>
+{{ end }}

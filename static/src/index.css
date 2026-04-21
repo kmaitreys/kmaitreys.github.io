@@ -2,16 +2,22 @@
  * By Oskar Wickström
  * Licensed under the MIT License (https://github.com/owickstrom/the-monospace-web/blob/main/LICENSE.md)
  **/
-@import url('https://fonts.cdnfonts.com/css/jetbrains-mono-2');
+@import url('https://iosevka-webfonts.github.io/iosevka/Iosevka.css');
 
 :root {
-  --font-family: "JetBrains Mono", monospace;
+  --font-family: "Iosevka Web", monospace;
   --line-height: 1.20rem;
   --border-thickness: 2px;
-  --text-color: #000;
-  --text-color-alt: #666;
-  --background-color: #fff;
-  --background-color-alt: #eee;
+  
+  /* Light Mode - Old Paper Look with Pastel Accents */
+  --text-color: #2c2400;
+  --text-color-alt: #6b5a2e;
+  --background-color: #fdf6e3;
+  --background-color-alt: #eee8d5;
+  --grid-color: rgba(44, 36, 0, 0.05);
+  --accent-color: #b58900; /* Solarized Yellow/Gold */
+  --border-color: #d3af86; /* Pastel Tan */
+  --hr-color: #859900;     /* Pastel Green */
 
   --font-weight-normal: 500;
   --font-weight-medium: 600;
@@ -25,12 +31,27 @@
   font-size: 16px;
 }
 
+[data-theme="dark"] {
+  --text-color: #f8f8f2;      /* Near white */
+  --text-color-alt: #bfbfbf;  /* Light grey */
+  --background-color: #000000; /* AMOLED Black */
+  --background-color-alt: #121212;
+  --grid-color: rgba(255, 255, 255, 0.08);
+  --accent-color: #8be9fd;    /* Vibrant Saturated Cyan/Blue */
+  --border-color: #6272a4;    /* Muted Slate Blue */
+  --hr-color: #50fa7b;        /* Vibrant Pastel Green */
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
-    --text-color: #fff;
-    --text-color-alt: #aaa;
-    --background-color: #000;
-    --background-color-alt: #111;
+  :root:not([data-theme="light"]) {
+    --text-color: #f8f8f2;
+    --text-color-alt: #bfbfbf;
+    --background-color: #000000;
+    --background-color-alt: #121212;
+    --grid-color: rgba(255, 255, 255, 0.08);
+    --accent-color: #8be9fd;
+    --border-color: #6272a4;
+    --hr-color: #50fa7b;
   }
 }
 
@@ -74,6 +95,49 @@ body {
   }
 }
 
+.nav-table {
+  width: 100%;
+  margin-bottom: var(--line-height);
+  border-collapse: collapse;
+}
+
+.nav-table td {
+  border: var(--border-thickness) solid var(--text-color);
+  padding: calc(var(--line-height) / 2 - var(--border-thickness)) 1ch;
+  line-height: var(--line-height);
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 800px) {
+  .nav-table, .nav-table tbody, .nav-table tr {
+    display: block;
+    width: 100%;
+    border: none;
+  }
+  
+  .nav-table td {
+    display: inline;
+    border: none;
+    padding: 0;
+    white-space: normal;
+  }
+
+  .nav-table td:after {
+    content: " / ";
+    color: var(--text-color-alt);
+    margin: 0 0.5ch;
+  }
+
+  .nav-table td:last-child:after {
+    content: "";
+  }
+
+  /* Make the 'Posts' (last child) stand out or stay on the same line */
+  .nav-table td[style*="text-align: right"] {
+    text-align: left !important;
+  }
+}
+
 h1,
 h2,
 h3,
@@ -81,14 +145,14 @@ h4,
 h5,
 h6 {
   font-weight: var(--font-weight-bold);
-  margin: calc(var(--line-height) * 2) 0 var(--line-height);
+  margin: var(--line-height) 0;
   line-height: var(--line-height);
 }
 
 h1 {
   font-size: 2rem;
   line-height: calc(2 * var(--line-height));
-  margin-bottom: calc(var(--line-height) * 2);
+  margin: var(--line-height) 0 var(--line-height);
   text-transform: uppercase;
 }
 
@@ -101,9 +165,9 @@ hr {
   position: relative;
   display: block;
   height: var(--line-height);
-  margin: calc(var(--line-height) * 1.5) 0;
+  margin: var(--line-height) 0;
   border: none;
-  color: var(--text-color);
+  padding: 0;
 }
 
 hr:after {
@@ -113,21 +177,23 @@ hr:after {
   top: calc(var(--line-height) / 2 - var(--border-thickness));
   left: 0;
   width: 100%;
-  border-top: calc(var(--border-thickness) * 3) double var(--text-color);
+  border-top: calc(var(--border-thickness) * 2) double var(--hr-color);
   height: 0;
 }
 
 a {
   text-decoration-thickness: var(--border-thickness);
-}
-
-a[href^="http"]::after {
-  content: none !important;
+  text-underline-offset: 2px;
 }
 
 a:link,
 a:visited {
-  color: var(--text-color);
+  color: inherit;
+  text-decoration-color: var(--accent-color);
+}
+
+a:hover {
+  text-decoration-color: var(--text-color);
 }
 
 p {
@@ -136,6 +202,7 @@ p {
 
 strong {
   font-weight: var(--font-weight-bold);
+  color: var(--accent-color);
 }
 
 em {
@@ -155,28 +222,19 @@ sub {
 table {
   position: relative;
   top: calc(var(--line-height) / 2);
-  width: calc(round(down, 100%, 1ch));
+  width: 100%;
   border-collapse: collapse;
   margin: 0 0 calc(var(--line-height) * 2);
 }
 
 th,
 td {
-  border: var(--border-thickness) solid var(--text-color);
+  border: var(--border-thickness) solid var(--border-color);
   padding:
     calc((var(--line-height) / 2)) calc(1ch - var(--border-thickness) / 2) calc((var(--line-height) / 2) - (var(--border-thickness)));
   line-height: var(--line-height);
   vertical-align: top;
   text-align: left;
-}
-
-table tbody tr:first-child>* {
-  padding-top: calc((var(--line-height) / 2) - var(--border-thickness));
-}
-
-
-th {
-  font-weight: 700;
 }
 
 .width-min {
@@ -187,6 +245,11 @@ th {
   width: 100%;
 }
 
+.header th,
+.header td {
+  border-color: var(--text-color);
+}
+
 .header {
   margin-bottom: calc(var(--line-height) * 2);
 }
@@ -195,14 +258,18 @@ th {
   margin: 0;
 }
 
-.header tr td:last-child {
-  text-align: right;
+.header .subtitle {
+  display: inline-block;
+  margin-top: calc(var(--line-height) / 2);
+  padding: 0 1ch;
+  border: var(--border-thickness) solid var(--accent-color);
+  font-weight: var(--font-weight-bold);
+  font-size: 0.85rem;
+  color: var(--accent-color);
 }
 
-p {
-  word-break: break-word;
-  word-wrap: break-word;
-  hyphens: auto;
+.header tr td:last-child {
+  text-align: right;
 }
 
 img,
@@ -326,7 +393,7 @@ li::marker {
 input,
 button,
 textarea {
-  border: var(--border-thickness) solid var(--text-color);
+  border: var(--border-thickness) solid var(--border-color);
   padding:
     calc(var(--line-height) / 2 - var(--border-thickness)) calc(1ch - var(--border-thickness));
   margin: 0;
@@ -512,7 +579,6 @@ label input {
 /* DEBUG UTILITIES */
 
 .debug .debug-grid {
-  --color: color-mix(in srgb, var(--text-color) 10%, var(--background-color) 90%);
   position: absolute;
   top: 0;
   left: 0;
@@ -520,8 +586,8 @@ label input {
   bottom: 0;
   z-index: -1;
   background-image:
-    repeating-linear-gradient(var(--color) 0 1px, transparent 1px 100%),
-    repeating-linear-gradient(90deg, var(--color) 0 1px, transparent 1px 100%);
+    repeating-linear-gradient(var(--grid-color) 0 1px, transparent 1px 100%),
+    repeating-linear-gradient(90deg, var(--grid-color) 0 1px, transparent 1px 100%);
   background-size: 1ch var(--line-height);
   margin: 0;
 }
@@ -530,12 +596,9 @@ label input {
   background: rgba(255, 0, 0, 0.1);
 }
 
-.debug-toggle-label {
-  text-align: right;
-}
-
-.site-title {
-  margin: 0;
-  padding-bottom: var(--line-height);
-  border-bottom: var(--border-thickness) solid var(--text-color);
+.theme-toggle {
+  text-transform: uppercase;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  margin-bottom: var(--line-height);
 }

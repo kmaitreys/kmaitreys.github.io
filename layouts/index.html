@@ -1,0 +1,52 @@
+{{ define "main" }}
+<table class="header">
+  <tr>
+    <td colspan="2" rowspan="2" class="width-auto">
+      <h1 class="title">{{ .Site.Params.name }}</h1>
+      <span class="subtitle">{{ .Site.Params.position }}</span>
+    </td>
+    <th class="width-min">Affiliation</th>
+    <td class="width-min">{{ .Site.Params.affiliation }}</td>
+  </tr>
+  <tr>
+    <th>Research Area</th>
+    <td class="width-min">{{ .Site.Params.research_area }}</td>
+  </tr>
+  <tr>
+  <th class="width-min">Links</th>
+  <td class="width-auto">
+    <a href="https://orcid.org/{{ .Site.Params.orcid }}">ORCID</a> /
+    <a href="https://github.com/{{ .Site.Params.github }}">GitHub</a>
+  </td>
+  <th class="width-min">Contact</th>
+  <td><a href="mailto:{{ .Site.Params.email }}">{{ .Site.Params.email }}</a></td>
+</tr>
+  <tr>
+    <th class="width-min">Updated</th>
+    <td class="width-auto">
+      <time style="white-space: pre;">{{ .Site.Params.updated }}</time>
+    </td>
+    <td colspan="2" class="width-min">
+      <button class="theme-toggle">Switch Theme</button>
+    </td>
+  </tr>
+</table>
+
+<main>
+  {{ .Content }}
+
+  {{ $posts := where .Site.RegularPages "Section" "posts" }}
+  {{ if $posts }}
+  <hr>
+  <h2 id="recent-posts">Recent Posts</h2>
+  <ul class="posts">
+    {{ range first 5 $posts }}
+    <li>
+      <time>{{ .Date.Format "2006-01-02" }}</time> — 
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    </li>
+    {{ end }}
+  </ul>
+  {{ end }}
+</main>
+{{ end }}

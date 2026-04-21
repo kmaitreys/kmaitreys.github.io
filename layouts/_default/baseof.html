@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ or .Site.LanguageCode "en" }}" xml:lang="{{ or .Site.LanguageCode "en" }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+  <link rel="stylesheet" href="{{ "src/reset.css" | relURL }}" />
+  <link rel="stylesheet" href="{{ "src/index.css" | relURL }}" />
+  {{ block "head" . }}{{ end }}
+</head>
+<body>
+  <table class="nav-table">
+    <tr>
+      <td class="width-min"><a href="{{ "" | relURL }}">Home</a></td>
+      <td class="width-min"><a href="{{ "education" | relURL }}">Education</a></td>
+      <td class="width-min"><a href="{{ "research" | relURL }}">Research</a></td>
+      <td class="width-min"><a href="{{ "publications" | relURL }}">Publications</a></td>
+      <td class="width-min"><a href="https://prosialab.github.io/knowledge/" target="_blank">Knowledge Base</a></td>
+      <td class="width-min"><a href="{{ "cv-llt.pdf" | relURL }}" target="_blank">CV</a></td>
+      <td class="width-auto" style="text-align: right;"><a href="{{ "posts" | relURL }}">Posts</a></td>
+    </tr>
+  </table>
+
+  {{ block "main" . }}{{ end }}
+  <div class="debug-grid"></div>
+  <script src="{{ "src/index.js" | relURL }}"></script>
+</body>
+</html>
