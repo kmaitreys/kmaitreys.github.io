@@ -430,8 +430,23 @@ ol li:before {
 }
 
 li {
-  margin: 0;
+  margin: 0 0 var(--line-height);
   padding: 0;
+}
+
+li:last-child {
+  margin-bottom: 0;
+}
+
+li ul,
+li ol {
+  margin-top: var(--line-height);
+  margin-bottom: 0;
+}
+
+li ul li,
+li ol li {
+  margin-bottom: 0;
 }
 
 li::marker {
