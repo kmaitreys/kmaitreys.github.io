@@ -86,22 +86,10 @@ html {
 
 body {
   position: relative;
-  width: 100%;
+  width: 80ch; /* Fixed desktop width */
   margin: 0;
   padding: var(--line-height) 2ch;
-  max-width: calc(min(80ch, round(down, 100%, 1ch)));
   line-height: var(--line-height);
-  overflow-x: hidden;
-}
-
-@media screen and (max-width: 480px) {
-  :root {
-    font-size: 14px;
-  }
-
-  body {
-    padding: var(--line-height) 1ch;
-  }
 }
 
 .nav-table {
@@ -124,40 +112,6 @@ body {
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .nav-table td {
     border-color: #fff;
-  }
-}
-
-
-@media screen and (max-width: 800px) {
-
-  .nav-table,
-  .nav-table tbody,
-  .nav-table tr {
-    display: block;
-    width: 100%;
-    border: none;
-  }
-
-  .nav-table td {
-    display: inline;
-    border: none;
-    padding: 0;
-    white-space: normal;
-  }
-
-  .nav-table td:after {
-    content: " / ";
-    color: var(--text-color-alt);
-    margin: 0 0.5ch;
-  }
-
-  .nav-table td:last-child:after {
-    content: "";
-  }
-
-  /* Make the 'Posts' (last child) stand out or stay on the same line */
-  .nav-table td[style*="text-align: right"] {
-    text-align: left !important;
   }
 }
 
