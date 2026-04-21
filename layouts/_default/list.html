@@ -5,7 +5,15 @@
       <h1 class="title">{{ .Title }}</h1>
     </td>
     <th class="width-min">Updated</th>
-    <td class="width-min"><time>{{ .Lastmod.Format "2006-01-02" }}</time></td>
+    <td class="width-min">
+      <time>
+        {{- $latest := .Lastmod -}}
+        {{- range .Pages -}}
+          {{- if .Lastmod.After $latest -}}{{- $latest = .Lastmod -}}{{- end -}}
+        {{- end -}}
+        {{- $latest.Format "2006-01-02" -}}
+      </time>
+    </td>
   </tr>
   <tr>
     <td colspan="2" class="width-min">
@@ -26,7 +34,7 @@
   <ul class="posts">
     {{ range .Pages }}
     <li>
-      <time>{{ .Date.Format "2006-01-02" }}</time> — 
+      <time>{{ .Lastmod.Format "2006-01-02" }}</time> — 
       <a href="{{ .RelPermalink }}">{{ .Title }}</a>
     </li>
     {{ end }}
