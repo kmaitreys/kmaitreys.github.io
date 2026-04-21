@@ -8,16 +8,19 @@
   --font-family: "Iosevka Web", monospace;
   --line-height: 1.20rem;
   --border-thickness: 2px;
-  
+
   /* Light Mode - Old Paper Look with Pastel Accents */
   --text-color: #2c2400;
   --text-color-alt: #6b5a2e;
   --background-color: #fdf6e3;
   --background-color-alt: #eee8d5;
   --grid-color: rgba(44, 36, 0, 0.05);
-  --accent-color: #b58900; /* Solarized Yellow/Gold */
-  --border-color: #d3af86; /* Pastel Tan */
-  --hr-color: #859900;     /* Pastel Green */
+  --accent-color: #b58900;
+  /* Solarized Yellow/Gold */
+  --border-color: #d3af86;
+  /* Pastel Tan */
+  --hr-color: #859900;
+  /* Pastel Green */
 
   --font-weight-normal: 500;
   --font-weight-medium: 600;
@@ -32,14 +35,20 @@
 }
 
 [data-theme="dark"] {
-  --text-color: #f8f8f2;      /* Near white */
-  --text-color-alt: #bfbfbf;  /* Light grey */
-  --background-color: #000000; /* AMOLED Black */
+  --text-color: #f8f8f2;
+  /* Near white */
+  --text-color-alt: #bfbfbf;
+  /* Light grey */
+  --background-color: #000000;
+  /* AMOLED Black */
   --background-color-alt: #121212;
   --grid-color: rgba(255, 255, 255, 0.08);
-  --accent-color: #8be9fd;    /* Vibrant Saturated Cyan/Blue */
-  --border-color: #6272a4;    /* Muted Slate Blue */
-  --hr-color: #50fa7b;        /* Vibrant Pastel Green */
+  --accent-color: #8be9fd;
+  /* Vibrant Saturated Cyan/Blue */
+  --border-color: #6272a4;
+  /* Muted Slate Blue */
+  --hr-color: #50fa7b;
+  /* Vibrant Pastel Green */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -102,19 +111,33 @@ body {
 }
 
 .nav-table td {
-  border: var(--border-thickness) solid var(--text-color);
+  border: var(--border-thickness) solid #000;
   padding: calc(var(--line-height) / 2 - var(--border-thickness)) 1ch;
   line-height: var(--line-height);
   white-space: nowrap;
 }
 
+[data-theme="dark"] .nav-table td {
+  border-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .nav-table td {
+    border-color: #fff;
+  }
+}
+
+
 @media screen and (max-width: 800px) {
-  .nav-table, .nav-table tbody, .nav-table tr {
+
+  .nav-table,
+  .nav-table tbody,
+  .nav-table tr {
     display: block;
     width: 100%;
     border: none;
   }
-  
+
   .nav-table td {
     display: inline;
     border: none;
@@ -146,6 +169,7 @@ h5,
 h6 {
   font-weight: var(--font-weight-bold);
   margin: var(--line-height) 0;
+  /* Changed from 2 lines to 1 to be more consistent */
   line-height: var(--line-height);
 }
 
@@ -222,7 +246,7 @@ sub {
 table {
   position: relative;
   top: calc(var(--line-height) / 2);
-  width: 100%;
+  width: calc(round(down, 100%, 1ch));
   border-collapse: collapse;
   margin: 0 0 calc(var(--line-height) * 2);
 }
@@ -237,21 +261,37 @@ td {
   text-align: left;
 }
 
+.header th,
+.header td {
+  border-color: #000;
+}
+
+[data-theme="dark"] .header th,
+[data-theme="dark"] .header td {
+  border-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .header th,
+  :root:not([data-theme="light"]) .header td {
+    border-color: #fff;
+  }
+}
+
+.header {
+  margin-bottom: calc(var(--line-height) * 2);
+}
+
+th {
+  font-weight: 700;
+}
+
 .width-min {
   width: 0%;
 }
 
 .width-auto {
   width: 100%;
-}
-
-.header th,
-.header td {
-  border-color: var(--text-color);
-}
-
-.header {
-  margin-bottom: calc(var(--line-height) * 2);
 }
 
 .header h1 {
@@ -270,6 +310,12 @@ td {
 
 .header tr td:last-child {
   text-align: right;
+}
+
+p {
+  word-break: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
 img,
