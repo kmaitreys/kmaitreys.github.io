@@ -2,7 +2,59 @@
  * By Oskar Wickström
  * Licensed under the MIT License (https://github.com/owickstrom/the-monospace-web/blob/main/LICENSE.md)
  **/
-@import url('https://iosevka-webfonts.github.io/iosevka/Iosevka.css');
+@font-face {
+  font-family: 'Iosevka Web';
+  font-display: swap;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Iosevka Web';
+  font-display: swap;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: italic;
+  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-MediumItalic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Iosevka Web';
+  font-display: swap;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-SemiBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Iosevka Web';
+  font-display: swap;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: italic;
+  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-SemiBoldItalic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Iosevka Web';
+  font-display: swap;
+  font-weight: 800;
+  font-stretch: normal;
+  font-style: normal;
+  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-ExtraBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Iosevka Web';
+  font-display: swap;
+  font-weight: 800;
+  font-stretch: normal;
+  font-style: italic;
+  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-ExtraBoldItalic.woff2') format('woff2');
+}
 
 :root {
   --font-family: "Iosevka Web", monospace;

@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=800" />
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+  
+  <link rel="preconnect" href="https://iosevka-webfonts.github.io" crossorigin />
+  <link rel="preload" href="https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-Medium.woff2" as="font" type="font/woff2" crossorigin />
+
   <link rel="stylesheet" href="{{ "src/reset.css" | relURL }}" />
   <link rel="stylesheet" href="{{ "src/index.css" | relURL }}" />
   {{ block "head" . }}{{ end }}
