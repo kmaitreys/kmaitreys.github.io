@@ -3,23 +3,30 @@ title: "Research & Projects"
 date: 2026-03-22
 ---
 
-### Studying planet-disk interactions using hydrodynamics models | 2025 – Present
+## Studying planet-disk interactions using hydrodynamics models | 2025 – Present
+
 *Kavli Institute for Astronomy and Astrophysics, Peking University, Beijing, China.*
+
 - **Supervisor:** Prof. Ruobing Dong
 - Modeling the interactions between forming planets and their parental disks to understand the origin of observed disk substructures.
 
-### Constraining the disk gas mass through chemical tracers | 2023 – Present
+## Constraining the disk gas mass through chemical tracers | 2023 – Present
+
 *NISER, Bhubaneswar.*
+
 - **Supervisor:** Dr. Liton Majumdar
 - Developed a self-consistent gas-grain thermochemical code to study planet-forming regions and constrain the mass available for giant planet formation.
 
-### JWST Observations & Ice Inventory Pipeline | 2025
+## JWST Observations & Ice Inventory Pipeline | 2025
+
 - Designed the initial stages of an algorithm to constrain ice column densities from JWST observational data.
 
-### Three-phase gas-grain astrochemical code | 2022 – 2024
+## Three-phase gas-grain astrochemical code | 2022 – 2024
+
 - Lead developer of a comprehensive three-phase gas-grain astrochemical model with isotope and spin-state chemistry.
 
-### Modeling rocky exoplanets using Machine Learning | 2024
+## Modeling rocky exoplanets using Machine Learning | 2024
+
 - Built a recurrent neural network (RNN) model using `scikit-learn` and `VPLANET` to predict the interior evolution of terrestrial exoplanets.
 
 ---
