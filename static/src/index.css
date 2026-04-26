@@ -16,8 +16,8 @@
   font-display: swap;
   font-weight: 500;
   font-stretch: normal;
-  font-style: italic;
-  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-MediumItalic.woff2') format('woff2');
+  font-style: oblique;
+  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-MediumOblique.woff2') format('woff2');
 }
 
 @font-face {
@@ -34,8 +34,8 @@
   font-display: swap;
   font-weight: 600;
   font-stretch: normal;
-  font-style: italic;
-  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-SemiBoldItalic.woff2') format('woff2');
+  font-style: oblique;
+  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-SemiBoldOblique.woff2') format('woff2');
 }
 
 @font-face {
@@ -52,9 +52,14 @@
   font-display: swap;
   font-weight: 800;
   font-stretch: normal;
-  font-style: italic;
-  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-ExtraBoldItalic.woff2') format('woff2');
+  font-style: oblique;
+  src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-ExtraBoldOblique.woff2') format('woff2');
 }
+
+em, i {
+  font-style: oblique;
+}
+
 
 :root {
   --font-family: "Iosevka Web", monospace;
