@@ -475,7 +475,8 @@ textarea {
   overflow: visible;
   background: var(--background-color);
   color: var(--text-color);
-  line-height: normal;
+  line-height: var(--line-height);
+  white-space: nowrap;
   -webkit-font-smoothing: inherit;
   -moz-osx-font-smoothing: inherit;
   -webkit-appearance: none;
