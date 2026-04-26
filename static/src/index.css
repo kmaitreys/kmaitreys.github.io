@@ -56,7 +56,8 @@
   src: url('https://iosevka-webfonts.github.io/iosevka/WOFF2/Iosevka-ExtraBoldOblique.woff2') format('woff2');
 }
 
-em, i {
+em,
+i {
   font-style: oblique;
 }
 
@@ -98,7 +99,7 @@ em, i {
   --background-color-alt: #1e293b;
   --grid-color: rgba(148, 163, 184, 0.1);
   --accent-color: #38bdf8;
-  --border-color: #334155;
+  --border-color: #218ea4;
   --hr-color: #2dd4bf;
 }
 
@@ -113,6 +114,17 @@ em, i {
 }
 
 @media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --text-color: #e2e8f0;
+    --text-color-alt: #94a3b8;
+    --background-color: #0f172a;
+    --background-color-alt: #1e293b;
+    --grid-color: rgba(148, 163, 184, 0.1);
+    --accent-color: #38bdf8;
+    --border-color: #218ea4;
+    --hr-color: #2dd4bf;
+  }
+
   :root:not([data-theme="light"]) h1.title {
     color: #ffffff;
   }
@@ -146,7 +158,8 @@ html {
 
 body {
   position: relative;
-  width: 80ch; /* Fixed desktop width */
+  width: 80ch;
+  /* Fixed desktop width */
   margin: 0;
   padding: var(--line-height) 2ch;
   line-height: var(--line-height);
@@ -282,6 +295,7 @@ td {
 }
 
 @media (prefers-color-scheme: dark) {
+
   :root:not([data-theme="light"]) .header th,
   :root:not([data-theme="light"]) .header td {
     border-color: var(--border-color);
