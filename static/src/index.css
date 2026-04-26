@@ -87,32 +87,26 @@
 }
 
 [data-theme="dark"] {
-  --text-color: #f8f8f2;
-  /* Near white */
-  --text-color-alt: #bfbfbf;
-  /* Light grey */
-  --background-color: #000000;
-  /* AMOLED Black */
-  --background-color-alt: #121212;
-  --grid-color: rgba(255, 255, 255, 0.08);
-  --accent-color: #8be9fd;
-  /* Vibrant Saturated Cyan/Blue */
-  --border-color: #6272a4;
-  /* Muted Slate Blue */
-  --hr-color: #50fa7b;
-  /* Vibrant Pastel Green */
+  --text-color: #e2e8f0;
+  --text-color-alt: #94a3b8;
+  --background-color: #0f172a;
+  --background-color-alt: #1e293b;
+  --grid-color: rgba(148, 163, 184, 0.1);
+  --accent-color: #38bdf8;
+  --border-color: #334155;
+  --hr-color: #2dd4bf;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --text-color: #f8f8f2;
-    --text-color-alt: #bfbfbf;
-    --background-color: #000000;
-    --background-color-alt: #121212;
-    --grid-color: rgba(255, 255, 255, 0.08);
-    --accent-color: #8be9fd;
-    --border-color: #6272a4;
-    --hr-color: #50fa7b;
+    --text-color: #e2e8f0;
+    --text-color-alt: #94a3b8;
+    --background-color: #0f172a;
+    --background-color-alt: #1e293b;
+    --grid-color: rgba(148, 163, 184, 0.1);
+    --accent-color: #38bdf8;
+    --border-color: #334155;
+    --hr-color: #2dd4bf;
   }
 }
 
@@ -145,25 +139,21 @@ body {
 }
 
 .nav-table {
-  width: 100%;
   margin-bottom: var(--line-height);
-  border-collapse: collapse;
 }
 
 .nav-table td {
-  border: var(--border-thickness) solid #000;
-  padding: calc(var(--line-height) / 2 - var(--border-thickness)) 1ch;
-  line-height: var(--line-height);
+  border-color: #000;
   white-space: nowrap;
 }
 
 [data-theme="dark"] .nav-table td {
-  border-color: #fff;
+  border-color: var(--border-color);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .nav-table td {
-    border-color: #fff;
+    border-color: var(--border-color);
   }
 }
 
@@ -274,13 +264,13 @@ td {
 
 [data-theme="dark"] .header th,
 [data-theme="dark"] .header td {
-  border-color: #fff;
+  border-color: var(--border-color);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .header th,
   :root:not([data-theme="light"]) .header td {
-    border-color: #fff;
+    border-color: var(--border-color);
   }
 }
 
