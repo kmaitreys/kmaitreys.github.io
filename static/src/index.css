@@ -4,7 +4,7 @@
  **/
 @font-face {
   font-family: 'Iosevka Web';
-  font-display: swap;
+  font-display: block;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
@@ -13,7 +13,7 @@
 
 @font-face {
   font-family: 'Iosevka Web';
-  font-display: swap;
+  font-display: block;
   font-weight: 500;
   font-stretch: normal;
   font-style: oblique;
@@ -22,7 +22,7 @@
 
 @font-face {
   font-family: 'Iosevka Web';
-  font-display: swap;
+  font-display: block;
   font-weight: 600;
   font-stretch: normal;
   font-style: normal;
@@ -31,7 +31,7 @@
 
 @font-face {
   font-family: 'Iosevka Web';
-  font-display: swap;
+  font-display: block;
   font-weight: 600;
   font-stretch: normal;
   font-style: oblique;
@@ -40,7 +40,7 @@
 
 @font-face {
   font-family: 'Iosevka Web';
-  font-display: swap;
+  font-display: block;
   font-weight: 800;
   font-stretch: normal;
   font-style: normal;
@@ -49,7 +49,7 @@
 
 @font-face {
   font-family: 'Iosevka Web';
-  font-display: swap;
+  font-display: block;
   font-weight: 800;
   font-stretch: normal;
   font-style: oblique;
