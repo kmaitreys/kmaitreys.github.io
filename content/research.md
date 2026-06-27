@@ -33,8 +33,8 @@ date: 2026-03-22
 
 ## Tinkering & Projects
 
-I like to tinker around with existing and abandoned scientific software from my field(s) of interest, often exploring recreational re-implementations of them in modern languages like [Rust](https://rust-lang.org/) and [Julia](https://julialang.org/), along with the ever-present Fortran, C, C++ and Python. You can learn more about them [here](https://prosialab.github.io).
+I like to tinker around with existing and abandoned scientific software from my field(s) of interest, often exploring recreational re-implementations of them in modern languages like [Rust](https://rust-lang.org/) and [Julia](https://julialang.org/), along with the ever-present Fortran, C, C++ and Python. You can learn more about them [here](https://planeteslab.github.io/tools/software).
 
 ## Knowledge Base
 
-I maintain a knowledge base of my research in an [Obsidian](https://obsidian.md/) vault and hosted as a website [here](https://prosialab.github.io/knowledge/).
+I maintain a knowledge base of my research in an [Obsidian](https://obsidian.md/) vault and hosted as a website [here](https://planeteslab.github.io/).
