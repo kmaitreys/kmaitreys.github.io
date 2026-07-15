@@ -1,43 +1,33 @@
 {{ define "main" }}
-<table class="header">
-  <tr>
-    <td colspan="2" rowspan="2" class="width-auto">
-      <h1 class="title">{{ .Site.Params.name }}</h1>
+<header class="page-header">
+  <div class="header-title-group">
+    <div class="title-wrapper">
+      <h1 class="title home-title">{{ .Site.Params.name }}</h1>
       <span class="subtitle">{{ .Site.Params.position }}</span>
-    </td>
-    <th class="width-min">Affiliation</th>
-    <td class="width-min">{{ .Site.Params.affiliation }}</td>
-  </tr>
-  <tr>
-    <th>Research Area</th>
-    <td class="width-min">{{ .Site.Params.research_area }}</td>
-  </tr>
-  <tr>
-  <th class="width-min">Links</th>
-  <td class="width-auto">
-    <a href="https://orcid.org/{{ .Site.Params.orcid }}">ORCID</a> /
-    <a href="https://github.com/{{ .Site.Params.github }}">GitHub</a> /
-    <a href="https://scholar.google.com/citations?user={{ .Site.Params.scholar }}=en">Scholar</a>
-  </td>
-  <th class="width-min">Contact</th>
-  <td><a href="mailto:{{ .Site.Params.email }}">{{ .Site.Params.email }}</a></td>
-</tr>
-  <tr>
-    <th class="width-min">Updated</th>
-    <td class="width-auto">
-      <time style="white-space: pre;">
-        {{- $latest := .Lastmod -}}
-        {{- range .Site.RegularPages -}}
-          {{- if .Lastmod.After $latest -}}{{- $latest = .Lastmod -}}{{- end -}}
-        {{- end -}}
-        {{- $latest.Format "2006-01-02" -}}
-      </time>
-    </td>
-    <td colspan="2" class="width-min">
-      <button class="theme-toggle">Switch Theme</button>
-    </td>
-  </tr>
-</table>
+    </div>
+    <button class="theme-toggle btn-link">Switch Theme</button>
+  </div>
+  
+  <div class="header-meta">
+    <div class="meta-item">
+      <span class="meta-label">Affiliation</span>
+      <span class="meta-value">{{ .Site.Params.affiliation }}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Research Area</span>
+      <span class="meta-value">{{ .Site.Params.research_area }}</span>
+    </div>
+  </div>
+
+  <div class="header-links">
+    <div class="link-group">
+      <a class="btn-link" href="https://orcid.org/{{ .Site.Params.orcid }}">ORCID</a>
+      <a class="btn-link" href="https://github.com/{{ .Site.Params.github }}">GitHub</a>
+      <a class="btn-link" href="https://scholar.google.com/citations?user={{ .Site.Params.scholar }}=en">Scholar</a>
+      <a class="btn-link" href="mailto:{{ .Site.Params.email }}">Email</a>
+    </div>
+  </div>
+</header>
 
 <main>
   {{ .Content }}

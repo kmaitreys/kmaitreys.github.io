@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ or .Site.LanguageCode "en" }}" xml:lang="{{ or .Site.LanguageCode "en" }}">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=800" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
   
   <link rel="preload" href="{{ "fonts/Iosevka-Medium.woff2" | relURL }}" as="font" type="font/woff2" crossorigin />
@@ -12,20 +12,58 @@
   {{ block "head" . }}{{ end }}
 </head>
 <body>
-  <table class="nav-table">
-    <tr>
-      <td class="width-min"><a href="{{ "" | relURL }}">Home</a></td>
-      <td class="width-min"><a href="{{ "education" | relURL }}">Education</a></td>
-      <td class="width-min"><a href="{{ "research" | relURL }}">Research</a></td>
-      <td class="width-min"><a href="{{ "publications" | relURL }}">Publications</a></td>
-      <td class="width-min"><a href="{{ "posts" | relURL }}">Posts</a></td>
-      <td class="width-min"><a href="https://planeteslab.github.io/" target="_blank">PlanetesLAB</a></td>
-      <td class="width-min"><a href="{{ "cv.pdf" | relURL }}" target="_blank">CV</a></td>
-      <td class="width-auto" style="text-align: right;"><a href="https://kmaitreys.github.io/blog/" target="_blank">Blog</a></td>
-    </tr>
-  </table>
+  <div class="mobile-topbar">
+    <div class="menu-left">
+      <button class="menu-toggle btn-link" aria-label="Toggle Menu">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+      <a href="{{ "" | relURL }}" class="mobile-site-title">{{ .Site.Params.name }}</a>
+    </div>
+    <button class="theme-toggle btn-link">Theme</button>
+  </div>
+  <nav class="navbar" id="navbar">
+    <a href="{{ "" | relURL }}">Home</a>
+    <a href="{{ "education" | relURL }}">Education</a>
+    <a href="{{ "research" | relURL }}">Research</a>
+    <a href="{{ "publications" | relURL }}">Publications</a>
+    <a href="{{ "posts" | relURL }}">Posts</a>
+    <a href="https://planeteslab.github.io/" target="_blank">PlanetesLAB</a>
+    <a href="{{ "cv.pdf" | relURL }}" target="_blank">CV</a>
+    <a href="https://kmaitreys.github.io/blog/" target="_blank">Blog</a>
+  </nav>
 
   {{ block "main" . }}{{ end }}
+
+  <footer class="page-footer">
+    <div class="header-meta footer-meta">
+      <div class="meta-item">
+        <span class="meta-label">Updated</span>
+        <span class="meta-value">
+          <time>
+            {{- if .IsHome -}}
+              {{- $latest := .Lastmod -}}
+              {{- range .Site.RegularPages -}}
+                {{- if .Lastmod.After $latest -}}{{- $latest = .Lastmod -}}{{- end -}}
+              {{- end -}}
+              {{- $latest.Format "2006-01-02" -}}
+            {{- else if or .IsNode .IsSection -}}
+              {{- $latest := .Lastmod -}}
+              {{- range .Pages -}}
+                {{- if .Lastmod.After $latest -}}{{- $latest = .Lastmod -}}{{- end -}}
+              {{- end -}}
+              {{- $latest.Format "2006-01-02" -}}
+            {{- else -}}
+              {{- .Lastmod.Format "2006-01-02" -}}
+            {{- end -}}
+          </time>
+        </span>
+      </div>
+    </div>
+  </footer>
   <div class="debug-grid"></div>
   <script src="{{ "src/index.js" | relURL }}"></script>
 </body>

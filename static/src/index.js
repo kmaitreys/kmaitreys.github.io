@@ -116,13 +116,15 @@ function checkOffsets() {
 document.body.classList.add("debug");
 
 // Theme toggle logic
-const themeToggle = document.querySelector(".theme-toggle");
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
+const themeToggles = document.querySelectorAll(".theme-toggle");
+if (themeToggles.length > 0) {
+  themeToggles.forEach(toggle => {
+    toggle.addEventListener("click", () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+    });
   });
 
   // Restore saved theme
@@ -130,4 +132,14 @@ if (themeToggle) {
   if (savedTheme) {
     document.documentElement.setAttribute("data-theme", savedTheme);
   }
+}
+
+// Mobile menu toggle logic
+const menuToggle = document.querySelector(".menu-toggle");
+const navbar = document.getElementById("navbar");
+if (menuToggle && navbar) {
+  menuToggle.addEventListener("click", () => {
+    navbar.classList.toggle("open");
+    menuToggle.classList.toggle("open");
+  });
 }

@@ -1,25 +1,12 @@
 {{ define "main" }}
-<table class="header">
-  <tr>
-    <td colspan="2" rowspan="2" class="width-auto">
-      <h1 class="title">{{ if .Title }}{{ .Title }}{{ else }}{{ .Site.Params.name }}{{ end }}</h1>
-    </td>
-    <th class="width-min">Updated</th>
-    <td class="width-min"><time>{{ .Lastmod.Format "2006-01-02" }}</time></td>
-  </tr>
-  <tr>
-    <td colspan="2" class="width-min">
-      <button class="theme-toggle">Switch Theme</button>
-    </td>
-  </tr>
-  <tr>
-    <th colspan="2" class="width-auto">Links</th>
-    <td colspan="2" class="width-min">
-      <a href="{{ "" | relURL }}">Home</a> /
-      <a href="{{ "posts" | relURL }}">Posts</a>
-    </td>
-  </tr>
-</table>
+<header class="page-header">
+  <div class="header-title-group">
+    <h1 class="title">{{ if .Title }}{{ .Title }}{{ else }}{{ .Site.Params.name }}{{ end }}</h1>
+    <button class="theme-toggle btn-link">Switch Theme</button>
+  </div>
+
+
+</header>
 
 <article>
   <main>
