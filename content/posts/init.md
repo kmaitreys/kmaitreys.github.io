@@ -1,6 +1,6 @@
 +++
 date = '2026-07-15T06:33:02+05:30'
-draft = true
+draft = false
 title = 'Initial Commit'
 +++
 
