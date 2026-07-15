@@ -4,5 +4,5 @@ draft = false
 title = 'Initial Commit'
 +++
 
-This site uses the [The Monospaced Web](https://owickstrom.github.io/the-monospace-web/) by Oskar Wickström,
+This site uses the [The Monospace Web](https://owickstrom.github.io/the-monospace-web/) by Oskar Wickström,
 and is generated using the [Hugo](https://gohugo.io/) static site generator.
