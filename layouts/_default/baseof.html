@@ -23,7 +23,7 @@
       </button>
       <a href="{{ "" | relURL }}" class="mobile-site-title">{{ .Site.Params.name }}</a>
     </div>
-    <button class="theme-toggle btn-link">Theme</button>
+    {{ partial "theme-toggle.html" . }}
   </div>
   <nav class="navbar" id="navbar">
     <a href="{{ "" | relURL }}">Home</a>

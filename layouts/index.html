@@ -5,7 +5,7 @@
       <h1 class="title home-title">{{ .Site.Params.name }}</h1>
       <span class="subtitle">{{ .Site.Params.position }}</span>
     </div>
-    <button class="theme-toggle btn-link">Switch Theme</button>
+    {{ partial "theme-toggle.html" . }}
   </div>
   
   <div class="header-meta">
@@ -20,7 +20,7 @@
   </div>
 
   <div class="header-links">
-    <div class="link-group">
+    <div class="link-group grid">
       <a class="btn-link" href="https://orcid.org/{{ .Site.Params.orcid }}">ORCID</a>
       <a class="btn-link" href="https://github.com/{{ .Site.Params.github }}">GitHub</a>
       <a class="btn-link" href="https://scholar.google.com/citations?user={{ .Site.Params.scholar }}=en">Scholar</a>

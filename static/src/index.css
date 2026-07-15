@@ -186,16 +186,16 @@ body {
   text-decoration: none;
   position: relative;
   display: inline-block;
+  text-align: center;
   padding: calc(var(--line-height) / 2) 1ch;
   line-height: var(--line-height);
   border-radius: 4px;
   background-color: transparent;
   border: none;
-  outline: 1px solid var(--border-color);
-  outline-offset: -1px;
+  box-shadow: inset 0 0 0 1px var(--border-color);
   color: var(--text-color);
   font-weight: var(--font-weight-medium);
-  transition: color 0.3s ease, background-color 0.3s ease, transform 0.1s ease, outline-color 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
 }
 
 .navbar a::after,
@@ -206,7 +206,7 @@ body {
 .navbar a:hover,
 .btn-link:hover {
   background-color: var(--accent-color);
-  outline-color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
   color: var(--background-color);
   transform: translateY(-2px);
 }
@@ -357,11 +357,11 @@ td {
 .header-meta {
   display: grid;
   grid-template-columns: max-content 1fr;
-  border: none;
-  outline: 1px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   background-color: transparent;
   gap: 0;
+  overflow: hidden;
 }
 
 .meta-item {
@@ -755,10 +755,71 @@ label input {
 }
 
 .theme-toggle {
-  text-transform: uppercase;
-  font-weight: var(--font-weight-medium);
   cursor: pointer;
   margin-bottom: var(--line-height);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  outline: none;
+  box-shadow: none;
+  color: var(--accent-color);
+  line-height: 0;
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus {
+  outline: none;
+  box-shadow: none;
+  background: none;
+  color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .mobile-topbar .theme-icon-sun {
+    transform: translateY(0px);
+  }
+
+  .mobile-topbar .theme-icon-moon {
+    transform: translateY(-9px);
+  }
+}
+
+.theme-icon-sun,
+.theme-icon-moon {
+  grid-area: 1 / 1;
+  display: block;
+}
+
+/* Default to Light Mode (Sun Icon) */
+.theme-icon-sun {
+  visibility: visible;
+}
+
+.theme-icon-moon {
+  visibility: hidden;
+}
+
+/* Dark Mode (Moon Icon) */
+[data-theme="dark"] .theme-icon-sun {
+  visibility: hidden;
+}
+
+[data-theme="dark"] .theme-icon-moon {
+  visibility: visible;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-icon-sun {
+    visibility: hidden;
+  }
+
+  :root:not([data-theme="light"]) .theme-icon-moon {
+    visibility: visible;
+  }
 }
 
 .page-footer {
@@ -785,6 +846,14 @@ h1.title:hover {
 /* Mobile topbar (hidden on desktop) */
 .mobile-topbar {
   display: none;
+}
+
+.theme-icon-moon {
+  transform: translateY(-10px);
+}
+
+.theme-icon-sun {
+  transform: translateY(2px);
 }
 
 @media (max-width: 768px) {
