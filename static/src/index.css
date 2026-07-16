@@ -152,6 +152,9 @@ html {
   align-items: center;
   background: var(--background-color);
   color: var(--text-color);
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -345,7 +348,7 @@ td {
 .header-meta {
   display: grid;
   grid-template-columns: max-content 1fr;
-  border: 1px solid var(--border-color);
+  box-shadow: 0 0 0 1px var(--border-color);
   border-radius: 4px;
   background-color: transparent;
   gap: 0;
@@ -767,6 +770,10 @@ label input {
 }
 
 @media (max-width: 768px) {
+  body {
+    width: calc(round(down, 100%, 1ch));
+  }
+
   .mobile-topbar .theme-icon-sun {
     transform: translateY(0px);
   }
@@ -943,8 +950,9 @@ h1.title:hover {
     align-items: stretch;
     background-color: var(--background-color-alt);
     border-radius: 8px;
-    padding: 2ch 1ch;
-    border: 1px solid var(--border-color);
+    padding: var(--line-height) 1ch;
+    outline: 1px solid var(--border-color);
+    outline-offset: -1px;
     margin-bottom: calc(var(--line-height) * 2);
   }
 
@@ -965,13 +973,14 @@ h1.title:hover {
   }
 
   .navbar>* {
-    margin-bottom: calc(var(--line-height) / 2);
+    margin-bottom: 0;
     text-align: center;
     border: none !important;
     outline: none !important;
     background-color: transparent;
     font-size: 1.1rem;
-    padding: calc(var(--line-height) / 2) 0;
+    line-height: calc(2 * var(--line-height));
+    padding: 0;
     opacity: 0;
     /* Hidden initially for animation */
   }
@@ -1022,22 +1031,8 @@ h1.title:hover {
     margin-bottom: 0;
   }
 
-  /* Reduce heading sizes on mobile to prevent cutoff */
-  h1 {
-    font-size: 1.5rem;
-    line-height: calc(1.5 * var(--line-height));
-  }
-
   h1.title {
     font-size: 1.8rem;
     letter-spacing: -0.5px;
-  }
-
-  h2 {
-    font-size: 0.9rem;
-  }
-
-  .page-header .subtitle {
-    font-size: 0.9rem;
   }
 }
