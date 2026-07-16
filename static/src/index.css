@@ -183,19 +183,10 @@ body {
 
 .navbar a,
 .btn-link {
-  text-decoration: none;
   position: relative;
   display: inline-block;
-  text-align: center;
-  padding: calc(var(--line-height) / 2) 1ch;
-  line-height: var(--line-height);
-  border-radius: 4px;
-  background-color: transparent;
-  border: none;
-  box-shadow: inset 0 0 0 1px var(--border-color);
-  color: var(--text-color);
   font-weight: var(--font-weight-medium);
-  transition: color 0.3s ease, background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, transform 0.1s ease, text-underline-offset 0.3s ease, text-decoration-color 0.3s ease;
 }
 
 .navbar a::after,
@@ -205,9 +196,6 @@ body {
 
 .navbar a:hover,
 .btn-link:hover {
-  background-color: var(--accent-color);
-  box-shadow: inset 0 0 0 1px var(--accent-color);
-  color: var(--background-color);
   transform: translateY(-2px);
 }
 
@@ -398,13 +386,13 @@ td {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 1ch;
+  gap: 3ch;
 }
 
 .page-header .link-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 1ch;
+  gap: 3ch;
 }
 
 p {
