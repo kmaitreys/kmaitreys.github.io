@@ -365,13 +365,23 @@ nav.main-nav a:hover, nav.main-nav a.active {
 }
 
 kbd {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  padding: 0.08rem 0.25rem;
-  border-radius: 3px;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
   color: var(--text-muted);
+  line-height: 1;
+  display: inline-block;
+}
+
+@media (max-width: 640px) {
+  .search-trigger kbd {
+    display: none; /* Clean icon-only search button on mobile */
+  }
 }
 
 /* Dense List Item Styles (Szymon Kaliski Style) */
