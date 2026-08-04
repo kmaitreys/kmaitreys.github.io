@@ -1,0 +1,22 @@
+<footer class="site-footer">
+  <div>
+    © {{ now.Year }} {{ .Site.Params.name }} · <a href="/index.xml">RSS Feed</a>
+  </div>
+  <div>
+    {{ if .Site.Params.blog_url }}
+    <a href="{{ .Site.Params.blog_url }}" target="_blank" class="external-link">Blog</a> · 
+    {{ end }}
+    {{ if .Site.Params.orcid }}
+    <a href="https://orcid.org/{{ .Site.Params.orcid }}" target="_blank" class="external-link">ORCID</a> · 
+    {{ end }}
+    {{ if .Site.Params.scholar }}
+    <a href="https://scholar.google.com/citations?user={{ .Site.Params.scholar }}" target="_blank" class="external-link">Google Scholar</a> · 
+    {{ end }}
+    {{ if .Site.Params.github }}
+    <a href="https://github.com/{{ .Site.Params.github }}" target="_blank" class="external-link">GitHub</a>
+    {{ end }}
+  </div>
+</footer>
+
+<!-- Search Modal Partial -->
+{{ partial "search.html" . }}

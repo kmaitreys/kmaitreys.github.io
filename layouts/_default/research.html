@@ -1,0 +1,42 @@
+{{ define "main" }}
+<article class="single-post">
+  <header class="post-header" style="margin-bottom: 2rem;">
+    <h1 style="font-size: 1.75rem; margin-top: 0; margin-bottom: 0.5rem;">{{ .Title }}</h1>
+    
+    <div style="font-size: 0.88rem; color: var(--text-muted);" class="tabular-num">
+      {{ $modDate := .Lastmod }}
+      {{ if not $modDate }}{{ $modDate = .Date }}{{ end }}
+      {{ if $modDate }}
+        Last updated: <time datetime="{{ $modDate.Format "2006-01-02T15:04:05Z07:00" }}">{{ $modDate.Format "2006 · 01" }}</time>
+      {{ end }}
+    </div>
+  </header>
+
+  <div class="post-content">
+    {{ if .Params.items }}
+    <ul class="item-list">
+      {{ range .Params.items }}
+      <li>
+        <span class="item-date">{{ .date }}</span>
+        <div class="item-content">
+          <strong>{{ .title }}</strong>
+          {{ if or .institution .supervisor }}
+          <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.15rem;">
+            {{ if .institution }}{{ .institution }}{{ end }}
+            {{ if and .institution .supervisor }} · {{ end }}
+            {{ if .supervisor }}<strong>Supervisor:</strong> {{ .supervisor }}{{ end }}
+          </div>
+          {{ end }}
+          {{ if .description }}
+          <div class="item-desc">{{ .description | markdownify }}</div>
+          {{ end }}
+        </div>
+      </li>
+      {{ end }}
+    </ul>
+    {{ end }}
+
+    {{ .Content }}
+  </div>
+</article>
+{{ end }}

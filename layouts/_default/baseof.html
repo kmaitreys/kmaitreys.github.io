@@ -1,70 +1,62 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ or .Site.LanguageCode "en" }}" xml:lang="{{ or .Site.LanguageCode "en" }}">
+<html lang="{{ .Site.LanguageCode | default "en-us" }}">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
   
-  <link rel="preload" href="{{ "fonts/Iosevka-Medium.woff2" | relURL }}" as="font" type="font/woff2" crossorigin />
+  <meta name="description" content="{{ .Description | default .Site.Params.description }}">
+  <meta name="author" content="{{ .Site.Params.name }}">
 
-  <link rel="stylesheet" href="{{ "src/reset.css" | relURL }}" />
-  <link rel="stylesheet" href="{{ "src/index.css" | relURL }}" />
-  {{ block "head" . }}{{ end }}
+  <!-- Theme initialization script (prevents flash of white/dark) -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('theme-dark');
+      } else if (savedTheme === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+  </script>
+
+  {{ $style := resources.Get "css/style.css" }}
+  {{ if $style }}
+    <link rel="stylesheet" href="{{ $style.RelPermalink }}">
+  {{ else }}
+    <link rel="stylesheet" href="/css/style.css">
+  {{ end }}
+
+  <!-- KaTeX LaTeX Math Styles & Auto-render Engine -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+
+  <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="/index.xml">
 </head>
 <body>
-  <div class="mobile-topbar">
-    <div class="menu-left">
-      <button class="menu-toggle btn-link" aria-label="Toggle Menu">
-        <div class="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </button>
-      <a href="{{ "" | relURL }}" class="mobile-site-title">{{ .Site.Params.name }}</a>
-    </div>
-    {{ partial "theme-toggle.html" . }}
+  <div class="site-wrapper">
+    {{ partial "header.html" . }}
+    <main>
+      {{ block "main" . }}{{ end }}
+    </main>
+    {{ partial "footer.html" . }}
   </div>
-  <nav class="navbar" id="navbar">
-    <a href="{{ "" | relURL }}">Home</a>
-    <a href="{{ "education" | relURL }}">Education</a>
-    <a href="{{ "research" | relURL }}">Research</a>
-    <a href="{{ "publications" | relURL }}">Publications</a>
-    <a href="{{ "posts" | relURL }}">Posts</a>
-    <a href="https://planeteslab.github.io/" target="_blank">PlanetesLAB</a>
-    <a href="{{ "cv.pdf" | relURL }}" target="_blank">CV</a>
-    <a href="https://kmaitreys.github.io/blog/" target="_blank">Blog</a>
-  </nav>
 
-  {{ block "main" . }}{{ end }}
-
-  <footer class="page-footer">
-    <div class="header-meta footer-meta">
-      <div class="meta-item">
-        <span class="meta-label">Updated</span>
-        <span class="meta-value">
-          <time>
-            {{- if .IsHome -}}
-              {{- $latest := .Lastmod -}}
-              {{- range .Site.RegularPages -}}
-                {{- if .Lastmod.After $latest -}}{{- $latest = .Lastmod -}}{{- end -}}
-              {{- end -}}
-              {{- $latest.Format "2006-01-02" -}}
-            {{- else if or .IsNode .IsSection -}}
-              {{- $latest := .Lastmod -}}
-              {{- range .Pages -}}
-                {{- if .Lastmod.After $latest -}}{{- $latest = .Lastmod -}}{{- end -}}
-              {{- end -}}
-              {{- $latest.Format "2006-01-02" -}}
-            {{- else -}}
-              {{- .Lastmod.Format "2006-01-02" -}}
-            {{- end -}}
-          </time>
-        </span>
-      </div>
-    </div>
-  </footer>
-  <div class="debug-grid"></div>
-  <script src="{{ "src/index.js" | relURL }}"></script>
+  {{ $mainJs := resources.Get "js/main.js" }}
+  {{ if $mainJs }}
+    <script src="{{ $mainJs.RelPermalink }}" defer></script>
+  {{ else }}
+    <script src="/js/main.js" defer></script>
+  {{ end }}
 </body>
 </html>

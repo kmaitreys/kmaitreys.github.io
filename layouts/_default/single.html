@@ -1,16 +1,38 @@
 {{ define "main" }}
-<header class="page-header">
-  <div class="header-title-group">
-    <h1 class="title">{{ if .Title }}{{ .Title }}{{ else }}{{ .Site.Params.name }}{{ end }}</h1>
-    {{ partial "theme-toggle.html" . }}
-  </div>
+<article class="single-post">
+  <header class="post-header" style="margin-bottom: 2rem;">
+    <h1 style="font-size: 1.75rem; margin-top: 0; margin-bottom: 0.5rem;">{{ .Title }}</h1>
+    
+    <div style="font-size: 0.88rem; color: var(--text-muted);" class="tabular-num">
+      {{ if eq .Section "writing" }}
+        {{ if .Date }}
+          <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "2006 · 01" }}</time>
+        {{ end }}
+        {{ if .ReadingTime }}
+          · <span>{{ .ReadingTime }} min read</span>
+        {{ end }}
+      {{ else }}
+        {{ $modDate := .Lastmod }}
+        {{ if not $modDate }}
+          {{ $modDate = .Date }}
+        {{ end }}
+        {{ if $modDate }}
+          Last updated: <time datetime="{{ $modDate.Format "2006-01-02T15:04:05Z07:00" }}">{{ $modDate.Format "2006 · 01" }}</time>
+        {{ end }}
+      {{ end }}
+    </div>
 
+    {{ if .Params.tags }}
+    <div style="margin-top: 0.6rem;">
+      {{ range .Params.tags }}
+        <a href="/tags/{{ . | urlize }}/" class="badge">#{{ . }}</a>
+      {{ end }}
+    </div>
+    {{ end }}
+  </header>
 
-</header>
-
-<article>
-  <main>
+  <div class="post-content">
     {{ .Content }}
-  </main>
+  </div>
 </article>
 {{ end }}

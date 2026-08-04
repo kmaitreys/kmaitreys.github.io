@@ -1,40 +1,39 @@
 ---
-title: "Research & Projects"
+title: "Research"
 date: 2026-03-22
+layout: "research"
+items:
+  - date: "2025 –"
+    title: "Studying planet-disk interactions using hydrodynamics models"
+    institution: "The Kavli Institute for Astronomy and Astrophysics, Peking University, Beijing, China"
+    supervisor: "Prof. Ruobing Dong"
+    description: "Modeling the interactions between forming planets and their parental disks to understand the origin of observed disk substructures."
+
+  - date: "2023 –"
+    title: "Constraining the disk gas mass through chemical tracers"
+    institution: "NISER, Bhubaneswar"
+    supervisor: "Dr. Liton Majumdar"
+    description: "Developed a self-consistent gas-grain thermochemical code to study planet-forming regions and constrain the mass available for giant planet formation."
+
+  - date: "2025"
+    title: "JWST Observations & Ice Inventory Pipeline"
+    description: "Designed an algorithm to constrain ice column densities from JWST NIRSpec/MIRI observational data."
+
+  - date: "2022 – 2024"
+    title: "Three-phase gas-grain astrochemical code (PEGASIS)"
+    description: "Lead developer of a comprehensive three-phase (gas, surface, bulk ice) astrochemical model with isotope and spin-state chemistry."
+
+  - date: "2024"
+    title: "Terrestrial Exoplanet Interior Modeling (Machine Learning)"
+    description: "Built a recurrent neural network (RNN) surrogate model using `scikit-learn` and `VPLANET` to predict the interior thermal evolution and degassing of rocky exoplanets."
 ---
 
-## Studying planet-disk interactions using hydrodynamics models | 2025 – Present
-
-*Kavli Institute for Astronomy and Astrophysics, Peking University, Beijing, China.*
-
-- **Supervisor:** Prof. Ruobing Dong
-- Modeling the interactions between forming planets and their parental disks to understand the origin of observed disk substructures.
-
-## Constraining the disk gas mass through chemical tracers | 2023 – Present
-
-*NISER, Bhubaneswar.*
-
-- **Supervisor:** Dr. Liton Majumdar
-- Developed a self-consistent gas-grain thermochemical code to study planet-forming regions and constrain the mass available for giant planet formation.
-
-## JWST Observations & Ice Inventory Pipeline | 2025
-
-- Designed the initial stages of an algorithm to constrain ice column densities from JWST observational data.
-
-## Three-phase gas-grain astrochemical code | 2022 – 2024
-
-- Lead developer of a comprehensive three-phase gas-grain astrochemical model with isotope and spin-state chemistry.
-
-## Modeling rocky exoplanets using Machine Learning | 2024
-
-- Built a recurrent neural network (RNN) model using `scikit-learn` and `VPLANET` to predict the interior evolution of terrestrial exoplanets.
-
 ---
 
-## Tinkering & Projects
+## Software and Programming
 
-I like to tinker around with existing and abandoned scientific software from my field(s) of interest, often exploring recreational re-implementations of them in modern languages like [Rust](https://rust-lang.org/) and [Julia](https://julialang.org/), along with the ever-present Fortran, C, C++ and Python. You can learn more about them [here](https://planeteslab.github.io/tools/software).
+I explore recreational re-implementations of classical astrophysical gas-grain and disk hydrodynamics solvers in modern languages like [Rust](https://rust-lang.org/) and [Julia](https://julialang.org/), alongside Fortran, C, C++, and Python. Learn more on my software notes page [here](https://planeteslab.github.io/tools/software).
 
 ## Knowledge Base
 
-I maintain a knowledge base of my research in an [Obsidian](https://obsidian.md/) vault and hosted as a website [here](https://planeteslab.github.io/).
+I maintain a personal research vault in [Obsidian](https://obsidian.md/) hosted as a website [here](https://planeteslab.github.io/).

@@ -1,22 +1,30 @@
 {{ define "main" }}
-<header class="page-header">
-  <div class="header-title-group">
-    <h1 class="title">{{ .Title }}</h1>
-    {{ partial "theme-toggle.html" . }}
+<section class="list-section">
+  <h1 style="margin-top: 0; font-size: 1.6rem;">{{ .Title }}</h1>
+
+  {{ if .Content }}
+  <div class="section-desc" style="margin-bottom: 2rem; color: var(--text-muted);">
+    {{ .Content }}
   </div>
+  {{ end }}
 
-
-</header>
-
-<main>
-  {{ .Content }}
-  <ul class="posts">
+  <ul class="item-list">
     {{ range .Pages }}
     <li>
-      <time>{{ .Lastmod.Format "2006-01-02" }}</time> — 
-      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      <span class="item-date">{{ .Date.Format "2006 · 01" }}</span>
+      <div class="item-content">
+        <div class="item-title-wrapper">
+          <a href="{{ .RelPermalink }}" class="item-title">{{ .Title }}</a>
+        </div>
+        {{ $sum := .Params.summary | default (.Params.description | default .Summary) }}
+        {{ if $sum }}
+          <div class="item-desc">{{ $sum | plainify }}</div>
+        {{ end }}
+      </div>
     </li>
+    {{ else }}
+      <p style="color: var(--text-muted);">No entries found in this section yet.</p>
     {{ end }}
   </ul>
-</main>
+</section>
 {{ end }}
