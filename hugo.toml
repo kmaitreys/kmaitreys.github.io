@@ -39,6 +39,7 @@ github = "kmaitreys"
 scholar = "r5841owAAAAJ&hl"
 email = "km.maitrey@gmail.com"
 blog_url = "https://kmaitreys.github.io/blog/"
+planeteslab_url = "https://planeteslab.github.io/"
 
 [menu]
 [[menu.main]]

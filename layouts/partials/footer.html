@@ -3,6 +3,9 @@
     © {{ now.Year }} {{ .Site.Params.name }} · <a href="/index.xml">RSS Feed</a>
   </div>
   <div>
+    {{ if .Site.Params.planeteslab_url }}
+    <a href="{{ .Site.Params.planeteslab_url }}" target="_blank" class="external-link">PlanetesLAB</a> · 
+    {{ end }}
     {{ if .Site.Params.blog_url }}
     <a href="{{ .Site.Params.blog_url }}" target="_blank" class="external-link">Blog</a> · 
     {{ end }}
