@@ -5,7 +5,7 @@
 
 :root {
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Light Theme Palette */
   --bg: #ffffff;
@@ -111,18 +111,23 @@
 }
 
 /* Global Reset & Base Setup */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 15px; /* Compact font size like Szymon's site */
-  line-height: 1.48; /* Dense line spacing */
+  font-size: 15px;
+  /* Compact font size like Szymon's site */
+  line-height: 1.48;
+  /* Dense line spacing */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -132,7 +137,8 @@ html, body {
 .site-wrapper {
   max-width: 50rem;
   margin: 0 auto;
-  padding: 1.75rem 1rem 3rem; /* Compact page padding */
+  padding: 1.75rem 1rem 3rem;
+  /* Compact page padding */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -165,7 +171,12 @@ main {
 }
 
 /* Typography & Headings (All-Lowercase Minimal Style for Nav & UI Headers) */
-h1, h2, h3, h4, h5, h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 .site-title,
 .site-title a,
 nav.main-nav a,
@@ -175,7 +186,12 @@ nav.main-nav a,
   letter-spacing: -0.01em;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
   line-height: 1.25;
   margin-top: 1.5rem;
@@ -183,10 +199,21 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text);
 }
 
-h1 { font-size: 1.35rem; }
-h2 { font-size: 1.15rem; }
-h3 { font-size: 1rem; }
-h4 { font-size: 0.95rem; }
+h1 {
+  font-size: 1.35rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+h4 {
+  font-size: 0.95rem;
+}
 
 p {
   margin-top: 0;
@@ -194,7 +221,9 @@ p {
   color: var(--text);
 }
 
-.tabular-num, time, .date-col {
+.tabular-num,
+time,
+.date-col {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
 }
@@ -358,7 +387,8 @@ nav.main-nav a {
   transition: color 0.15s ease;
 }
 
-nav.main-nav a:hover, nav.main-nav a.active {
+nav.main-nav a:hover,
+nav.main-nav a.active {
   color: var(--text);
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -478,7 +508,8 @@ kbd {
 
 @media (max-width: 640px) {
   .search-trigger kbd {
-    display: none; /* Clean icon-only search button on mobile */
+    display: none;
+    /* Clean icon-only search button on mobile */
   }
 }
 
@@ -490,7 +521,8 @@ kbd {
 }
 
 .item-list li {
-  margin-bottom: 0.85rem; /* Tight item spacing matching Szymon Kaliski's site */
+  margin-bottom: 0.85rem;
+  /* Tight item spacing matching Szymon Kaliski's site */
   display: flex;
   align-items: baseline;
   gap: 1rem;
@@ -596,7 +628,8 @@ kbd {
   transition: background 0.1s ease;
 }
 
-.search-results-list li a:hover, .search-results-list li a.selected {
+.search-results-list li a:hover,
+.search-results-list li a.selected {
   background: var(--bg-secondary);
 }
 
@@ -620,7 +653,8 @@ hr {
 }
 
 /* Code Blocks */
-pre, code {
+pre,
+code {
   font-family: var(--font-mono);
   font-size: 0.85rem;
 }
@@ -650,25 +684,161 @@ pre code {
 }
 
 /* Chroma Syntax Highlighting - One Light (Light Mode) / One Dark Pro Darker (Dark Mode) */
-.chroma { color: var(--code-text); background-color: var(--code-bg); }
-.chroma .line { display: flex; }
-.chroma .lntd { vertical-align: top; padding: 0; margin: 0; border: 0; }
-.chroma .lntable { border-spacing: 0; padding: 0; margin: 0; border: 0; }
-.chroma .hl { background-color: var(--syntax-hl); }
-.chroma .lnt, .chroma .ln { white-space: pre; user-select: none; margin-right: 0.8em; padding: 0 0.4em; color: var(--syntax-ln); }
-.chroma .k, .chroma .kd, .chroma .kn, .chroma .kp, .chroma .kr { color: var(--syntax-keyword); font-weight: 500; } /* Keywords (Mauve) */
-.chroma .kc, .chroma .kt { color: var(--syntax-type); } /* Keyword Constants & Types (Yellow) */
-.chroma .n, .chroma .na, .chroma .no, .chroma .nd, .chroma .ni, .chroma .ne, .chroma .nl, .chroma .nn, .chroma .nx, .chroma .py, .chroma .nt { color: var(--syntax-name); } /* Names */
-.chroma .nv, .chroma .vc, .chroma .vg, .chroma .vi, .chroma .vm { color: var(--syntax-var); } /* Variables (Red) */
-.chroma .nc, .chroma .nb, .chroma .bp { color: var(--syntax-builtin); } /* Classes & Builtins (Yellow/Lavender) */
-.chroma .nf { color: var(--syntax-fn); font-weight: 500; } /* Functions (Blue) */
-.chroma .fm { color: var(--syntax-special-fn); font-weight: 500; } /* Special Functions (Teal) */
-.chroma .s, .chroma .sa, .chroma .sb, .chroma .sc, .chroma .dl, .chroma .sd, .chroma .s2, .chroma .se, .chroma .sh, .chroma .si, .chroma .sx, .chroma .sr, .chroma .s1, .chroma .ss { color: var(--syntax-string); } /* Strings (Green) */
-.chroma .m, .chroma .mb, .chroma .mf, .chroma .mh, .chroma .mi, .chroma .il, .chroma .mo { color: var(--syntax-number); } /* Numbers (Peach) */
-.chroma .o, .chroma .ow { color: var(--syntax-operator); } /* Operators (Sky) */
-.chroma .c, .chroma .ch, .chroma .cm, .chroma .c1, .chroma .cs, .chroma .cp, .chroma .cpf { color: var(--syntax-comment); font-style: italic; } /* Comments (Overlay) */
-.chroma .gd { color: var(--syntax-var); background-color: rgba(243, 139, 168, 0.15); } /* Generic Deleted */
-.chroma .gi { color: var(--syntax-string); background-color: rgba(166, 227, 161, 0.15); font-weight: bold; } /* Generic Inserted */
+.chroma {
+  color: var(--code-text);
+  background-color: var(--code-bg);
+}
+
+.chroma .line {
+  display: flex;
+}
+
+.chroma .lntd {
+  vertical-align: top;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.chroma .lntable {
+  border-spacing: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.chroma .hl {
+  background-color: var(--syntax-hl);
+}
+
+.chroma .lnt,
+.chroma .ln {
+  white-space: pre;
+  user-select: none;
+  margin-right: 0.8em;
+  padding: 0 0.4em;
+  color: var(--syntax-ln);
+}
+
+.chroma .k,
+.chroma .kd,
+.chroma .kn,
+.chroma .kp,
+.chroma .kr {
+  color: var(--syntax-keyword);
+  font-weight: 500;
+}
+
+/* Keywords (Mauve) */
+.chroma .kc,
+.chroma .kt {
+  color: var(--syntax-type);
+}
+
+/* Keyword Constants & Types (Yellow) */
+.chroma .n,
+.chroma .na,
+.chroma .no,
+.chroma .nd,
+.chroma .ni,
+.chroma .ne,
+.chroma .nl,
+.chroma .nn,
+.chroma .nx,
+.chroma .py,
+.chroma .nt {
+  color: var(--syntax-name);
+}
+
+/* Names */
+.chroma .nv,
+.chroma .vc,
+.chroma .vg,
+.chroma .vi,
+.chroma .vm {
+  color: var(--syntax-var);
+}
+
+/* Variables (Red) */
+.chroma .nc,
+.chroma .nb,
+.chroma .bp {
+  color: var(--syntax-builtin);
+}
+
+/* Classes & Builtins (Yellow/Lavender) */
+.chroma .nf {
+  color: var(--syntax-fn);
+  font-weight: 500;
+}
+
+/* Functions (Blue) */
+.chroma .fm {
+  color: var(--syntax-special-fn);
+  font-weight: 500;
+}
+
+/* Special Functions (Teal) */
+.chroma .s,
+.chroma .sa,
+.chroma .sb,
+.chroma .sc,
+.chroma .dl,
+.chroma .sd,
+.chroma .s2,
+.chroma .se,
+.chroma .sh,
+.chroma .si,
+.chroma .sx,
+.chroma .sr,
+.chroma .s1,
+.chroma .ss {
+  color: var(--syntax-string);
+}
+
+/* Strings (Green) */
+.chroma .m,
+.chroma .mb,
+.chroma .mf,
+.chroma .mh,
+.chroma .mi,
+.chroma .il,
+.chroma .mo {
+  color: var(--syntax-number);
+}
+
+/* Numbers (Peach) */
+.chroma .o,
+.chroma .ow {
+  color: var(--syntax-operator);
+}
+
+/* Operators (Sky) */
+.chroma .c,
+.chroma .ch,
+.chroma .cm,
+.chroma .c1,
+.chroma .cs,
+.chroma .cp,
+.chroma .cpf {
+  color: var(--syntax-comment);
+  font-style: italic;
+}
+
+/* Comments (Overlay) */
+.chroma .gd {
+  color: var(--syntax-var);
+  background-color: rgba(243, 139, 168, 0.15);
+}
+
+/* Generic Deleted */
+.chroma .gi {
+  color: var(--syntax-string);
+  background-color: rgba(166, 227, 161, 0.15);
+  font-weight: bold;
+}
+
+/* Generic Inserted */
 
 /* Blockquotes */
 blockquote {
@@ -710,7 +880,7 @@ details.footnote-details {
   position: static;
 }
 
-details.footnote-details > summary.footnote-summary {
+details.footnote-details>summary.footnote-summary {
   display: inline;
   cursor: pointer;
   list-style: none;
@@ -720,8 +890,8 @@ details.footnote-details > summary.footnote-summary {
   z-index: 5;
 }
 
-details.footnote-details > summary.footnote-summary::-webkit-details-marker,
-details.footnote-details > summary.footnote-summary::marker {
+details.footnote-details>summary.footnote-summary::-webkit-details-marker,
+details.footnote-details>summary.footnote-summary::marker {
   display: none !important;
   content: "" !important;
 }
@@ -736,7 +906,7 @@ details.footnote-details > summary.footnote-summary::marker {
   transition: opacity 0.15s ease;
 }
 
-details.footnote-details > summary.footnote-summary:hover .footnote-ref-num {
+details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
   opacity: 0.75;
 }
 
@@ -756,12 +926,12 @@ details.footnote-details > summary.footnote-summary:hover .footnote-ref-num {
 
 /* Desktop layout: Footnote displayed permanently in the right margin beside corresponding line */
 @media (min-width: 900px) {
-  details.footnote-details > summary.footnote-summary {
+  details.footnote-details>summary.footnote-summary {
     cursor: default;
     pointer-events: none;
   }
 
-  details.footnote-details > .footnote-body,
+  details.footnote-details>.footnote-body,
   .footnote-body {
     display: block !important;
     position: absolute;
@@ -779,7 +949,7 @@ details.footnote-details > summary.footnote-summary:hover .footnote-ref-num {
     position: relative;
   }
 
-  details.footnote-details > summary.footnote-summary {
+  details.footnote-details>summary.footnote-summary {
     cursor: pointer;
     pointer-events: auto;
   }
@@ -813,7 +983,7 @@ details.fig-bar[open] {
   border-color: var(--accent);
 }
 
-details.fig-bar > summary.fig-bar-summary {
+details.fig-bar>summary.fig-bar-summary {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -826,8 +996,8 @@ details.fig-bar > summary.fig-bar-summary {
   user-select: none;
 }
 
-details.fig-bar > summary.fig-bar-summary::-webkit-details-marker,
-details.fig-bar > summary.fig-bar-summary::marker {
+details.fig-bar>summary.fig-bar-summary::-webkit-details-marker,
+details.fig-bar>summary.fig-bar-summary::marker {
   display: none !important;
   content: "" !important;
 }
@@ -877,9 +1047,3 @@ details.fig-bar[open] .fig-bar-icon {
   color: var(--text-muted);
   margin-top: 0.4rem;
 }
-
-
-
-
-
-
