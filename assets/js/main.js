@@ -131,10 +131,217 @@
     });
   }
 
+  // ==========================================
+  // 4. Interactive Footnote Details Tag Transform
+  // ==========================================
+  function initFootnotes() {
+    const footnotesContainer = document.querySelector('.footnotes');
+    if (!footnotesContainer) return;
+
+    const footnoteItems = footnotesContainer.querySelectorAll('li[id^="fn:"]');
+    if (!footnoteItems.length) return;
+
+    const footnoteMap = {};
+    footnoteItems.forEach(item => {
+      const fnId = item.id.replace(/^fn:/, '');
+      const clone = item.cloneNode(true);
+
+      // Remove backref links (e.g. ↩)
+      const backlinks = clone.querySelectorAll('.footnote-backref, a[href^="#fnref:"]');
+      backlinks.forEach(el => el.remove());
+
+      let html = clone.innerHTML.trim();
+      // Remove outer <p> tag wrapper if it's a single paragraph
+      html = html.replace(/^<p>(.*?)<\/p>$/is, '$1');
+      footnoteMap[fnId] = html;
+    });
+
+    const isDesktop = window.innerWidth >= 900;
+    const fnRefs = document.querySelectorAll('sup[id^="fnref:"]');
+
+    fnRefs.forEach(sup => {
+      const fnId = sup.id.replace(/^fnref:/, '');
+      const content = footnoteMap[fnId];
+
+      if (content) {
+        const details = document.createElement('details');
+        details.className = 'footnote-details';
+        if (isDesktop) {
+          details.setAttribute('open', '');
+        }
+
+        const summary = document.createElement('summary');
+        summary.className = 'footnote-summary';
+        summary.setAttribute('title', 'Toggle footnote');
+        summary.setAttribute('aria-label', `Footnote ${fnId}`);
+        summary.innerHTML = `<sup class="footnote-ref-num">${fnId}</sup>`;
+
+        const body = document.createElement('span');
+        body.className = 'footnote-body';
+        body.innerHTML = `<sup class="footnote-num">${fnId}</sup> ${content}`;
+
+        details.appendChild(summary);
+        details.appendChild(body);
+
+        sup.parentNode.replaceChild(details, sup);
+      }
+    });
+
+    footnotesContainer.style.display = 'none';
+  }
+
+  // ==========================================
+  // 5. Right Side Footnotes Layout & Stacking
+  // ==========================================
+  function adjustMarginElements() {
+    const container = document.querySelector('.post-content');
+    if (!container) return;
+
+    if (window.innerWidth < 900) {
+      // Reset inline top styles on mobile/tablet
+      const fnBodies = container.querySelectorAll('.footnote-body');
+      fnBodies.forEach(el => { el.style.top = ''; });
+      return;
+    }
+
+    const containerRect = container.getBoundingClientRect();
+
+    // Right Margin Footnotes (.footnote-body inside details)
+    const rightElements = [];
+    container.querySelectorAll('details.footnote-details > .footnote-body').forEach(el => {
+      rightElements.push(el);
+    });
+
+    rightElements.forEach(el => { el.style.top = ''; });
+    rightElements.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+
+    let prevRightBottom = 0;
+    const gap = 14; // Vertical gap in px
+
+    rightElements.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const naturalTop = rect.top - containerRect.top;
+      const height = rect.height;
+
+      let actualTop = naturalTop;
+      if (actualTop < prevRightBottom) {
+        actualTop = prevRightBottom;
+      }
+
+      el.style.top = actualTop + 'px';
+      prevRightBottom = actualTop + height + gap;
+    });
+  }
+
+  function initMarginLayout() {
+    adjustMarginElements();
+
+    window.addEventListener('load', adjustMarginElements);
+    window.addEventListener('resize', adjustMarginElements);
+
+    // Re-adjust layout on <details> toggle
+    document.addEventListener('toggle', (e) => {
+      if (e.target && e.target.classList.contains('footnote-details')) {
+        adjustMarginElements();
+      }
+    }, true);
+  }
+
+  // ==========================================
+  // 6. Auto-transform Images & Videos to Collapsible 1-Line Figure Bars
+  // ==========================================
+  function initFigBars() {
+    const postContent = document.querySelector('.post-content');
+    if (!postContent) return;
+
+    // 1. Convert standard markdown <img> elements to <details class="fig-bar">
+    const images = Array.from(postContent.querySelectorAll('img')).filter(img => {
+      return !img.closest('.badge') &&
+             !img.closest('.fig-bar') &&
+             !img.classList.contains('no-fig-bar');
+    });
+
+    images.forEach((img, idx) => {
+      const figNum = idx + 1;
+      const figure = img.closest('figure');
+      const figcaption = figure ? figure.querySelector('figcaption') : null;
+      const captionText = figcaption ? figcaption.textContent.trim() : (img.alt || '').trim();
+      const src = img.src;
+
+      const title = captionText ? `Fig. ${figNum}: ${captionText}` : `Figure ${figNum}`;
+
+      const details = document.createElement('details');
+      details.className = 'fig-bar';
+      details.innerHTML = `
+        <summary class="fig-bar-summary">
+          <svg class="fig-bar-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+          <span class="fig-bar-title">${title}</span>
+          <span class="fig-bar-badge">Expand Figure</span>
+        </summary>
+        <div class="fig-bar-content">
+          <img src="${src}" alt="${captionText}">
+          ${captionText ? `<figcaption>${captionText}</figcaption>` : ''}
+        </div>
+      `;
+
+      const targetElement = figure || img;
+      targetElement.parentNode.replaceChild(details, targetElement);
+    });
+
+    // 2. Convert standard <video> elements to <details class="fig-bar vid-bar">
+    const videos = Array.from(postContent.querySelectorAll('video')).filter(vid => {
+      return !vid.closest('.fig-bar');
+    });
+
+    videos.forEach((vid, idx) => {
+      const vidNum = idx + 1;
+      const source = vid.querySelector('source');
+      const src = vid.src || (source ? source.src : '');
+      if (!src) return;
+
+      const figure = vid.closest('figure');
+      const figcaption = figure ? figure.querySelector('figcaption') : null;
+      const captionText = figcaption ? figcaption.textContent.trim() : (vid.getAttribute('data-caption') || vid.getAttribute('title') || '').trim();
+
+      const title = captionText ? `Video ${vidNum}: ${captionText}` : `Video ${vidNum}`;
+
+      const details = document.createElement('details');
+      details.className = 'fig-bar vid-bar';
+      details.innerHTML = `
+        <summary class="fig-bar-summary">
+          <svg class="fig-bar-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+          </svg>
+          <span class="fig-bar-title">${title}</span>
+          <span class="fig-bar-badge">Expand Video</span>
+        </summary>
+        <div class="fig-bar-content">
+          <video width="100%" controls preload="metadata">
+            <source src="${src}">
+          </video>
+          ${captionText ? `<figcaption>${captionText}</figcaption>` : ''}
+        </div>
+      `;
+
+      const targetElement = figure || vid;
+      targetElement.parentNode.replaceChild(details, targetElement);
+    });
+  }
+
   // Initialize all features on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initSearch();
     initEmailObfuscation();
+    initFootnotes();
+    initMarginLayout();
+    initFigBars();
   });
 })();
+
+
+
+

@@ -1,0 +1,15 @@
+{{ $src := .Get "src" | default (.Get 0) }}
+{{ $title := .Get "title" | default (.Get "caption" | default (.Get 1 | default "Figure")) }}
+
+<details class="fig-bar">
+  <summary class="fig-bar-summary">
+    <svg class="fig-bar-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+    <span class="fig-bar-title">{{ $title }}</span>
+    <span class="fig-bar-badge">Expand Figure</span>
+  </summary>
+  <div class="fig-bar-content">
+    <img src="{{ $src }}" alt="{{ $title }}">
+  </div>
+</details>

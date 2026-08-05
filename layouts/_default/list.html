@@ -16,10 +16,6 @@
         <div class="item-title-wrapper">
           <a href="{{ .RelPermalink }}" class="item-title">{{ .Title }}</a>
         </div>
-        {{ $sum := .Params.summary | default (.Params.description | default .Summary) }}
-        {{ if $sum }}
-          <div class="item-desc">{{ $sum | plainify }}</div>
-        {{ end }}
       </div>
     </li>
     {{ else }}

@@ -20,6 +20,7 @@
   --accent: #2b5c8f;
   --code-bg: #f3f4f6;
   --tooltip-shadow: rgba(0, 0, 0, 0.08);
+  --fn-num-color: #d97706;
 }
 
 .theme-dark {
@@ -36,6 +37,7 @@
   --accent: #64a2df;
   --code-bg: #1e2029;
   --tooltip-shadow: rgba(0, 0, 0, 0.5);
+  --fn-num-color: #e07a5f;
 }
 
 /* System preference fallback if no explicit theme set */
@@ -53,6 +55,7 @@
     --accent: #64a2df;
     --code-bg: #1e2029;
     --tooltip-shadow: rgba(0, 0, 0, 0.5);
+    --fn-num-color: #e07a5f;
   }
 }
 
@@ -76,7 +79,7 @@ html, body {
 
 /* Container & Layout */
 .site-wrapper {
-  max-width: 46rem;
+  max-width: 50rem;
   margin: 0 auto;
   padding: 1.75rem 1rem 3rem; /* Compact page padding */
   min-height: 100vh;
@@ -86,18 +89,47 @@ html, body {
   z-index: 1;
 }
 
+@media (min-width: 1024px) {
+  .site-wrapper {
+    margin-left: max(6rem, 18vw);
+    margin-right: auto;
+    max-width: 48rem;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1023px) {
+  .site-wrapper {
+    margin-left: max(3.5rem, 11vw);
+    margin-right: auto;
+    max-width: 42rem;
+  }
+}
+
 main {
   flex: 1;
 }
 
-/* Typography & Headings */
+.post-content {
+  position: relative;
+}
+
+/* Typography & Headings (All-Lowercase Minimal Style for Nav & UI Headers) */
+h1, h2, h3, h4, h5, h6,
+.site-title,
+.site-title a,
+nav.main-nav a,
+.fig-bar-title,
+.fig-bar-badge {
+  text-transform: lowercase;
+  letter-spacing: -0.01em;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   line-height: 1.25;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   color: var(--text);
-  letter-spacing: -0.015em;
 }
 
 h1 { font-size: 1.35rem; }
@@ -177,28 +209,43 @@ a.external-link:hover::after {
   color: var(--text);
 }
 
-/* Images, Figures & Media */
+/* Images, Figures & Media (Minimal Card Aesthetic) */
 img {
   max-width: 100%;
+  max-height: 480px;
+  object-fit: contain;
   height: auto;
   display: block;
-  margin: 1.25rem 0;
+  margin: 1.25rem auto;
   border-radius: 6px;
   border: 1px solid var(--border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.post-content img {
+  cursor: zoom-in;
+}
+
+.post-content img:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--tooltip-shadow);
+  border-color: var(--accent);
 }
 
 figure {
-  margin: 1.25rem 0;
+  margin: 1.5rem 0;
+  text-align: center;
 }
 
 figure img {
-  margin: 0 0 0.4rem 0;
+  margin: 0 auto 0.45rem auto;
 }
 
 figcaption {
   font-size: 0.82rem;
   color: var(--text-muted);
   text-align: center;
+  margin-top: 0.35rem;
 }
 
 video {
@@ -578,3 +625,186 @@ footer.site-footer a {
 footer.site-footer a:hover {
   color: var(--text);
 }
+
+/* ==========================================================================
+   Footnote Details Tag & Side Margin Rendering
+   ========================================================================== */
+
+details.footnote-details {
+  display: inline;
+  position: static;
+}
+
+details.footnote-details > summary.footnote-summary {
+  display: inline;
+  cursor: pointer;
+  list-style: none;
+  outline: none;
+  user-select: none;
+  position: relative;
+  z-index: 5;
+}
+
+details.footnote-details > summary.footnote-summary::-webkit-details-marker,
+details.footnote-details > summary.footnote-summary::marker {
+  display: none !important;
+  content: "" !important;
+}
+
+.footnote-ref-num {
+  color: var(--fn-num-color);
+  font-weight: 600;
+  font-size: 0.78em;
+  line-height: 0;
+  vertical-align: super;
+  padding: 0 1px;
+  transition: opacity 0.15s ease;
+}
+
+details.footnote-details > summary.footnote-summary:hover .footnote-ref-num {
+  opacity: 0.75;
+}
+
+.footnote-body {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.footnote-num {
+  color: var(--fn-num-color);
+  font-weight: 600;
+  font-size: 0.85em;
+  vertical-align: super;
+  margin-right: 0.2rem;
+}
+
+/* Desktop layout: Footnote displayed permanently in the right margin beside corresponding line */
+@media (min-width: 900px) {
+  details.footnote-details > summary.footnote-summary {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  details.footnote-details > .footnote-body,
+  .footnote-body {
+    display: block !important;
+    position: absolute;
+    left: calc(100% + 2rem);
+    width: 280px;
+    margin-top: -0.15em;
+    padding: 0;
+    pointer-events: auto;
+  }
+}
+
+/* Mobile & Tablet layout: Footnote expands directly below/beside the line when clicked */
+@media (max-width: 899px) {
+  details.footnote-details {
+    position: relative;
+  }
+
+  details.footnote-details > summary.footnote-summary {
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .footnote-body {
+    display: block;
+    margin: 0.4rem 0 0.65rem 0;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--bg-secondary);
+    border-left: 3px solid var(--fn-num-color);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 0.85rem;
+  }
+}
+
+/* ==========================================================================
+   Collapsible 1-Line Figure & Video Bars (.fig-bar)
+   ========================================================================== */
+
+details.fig-bar {
+  margin: 0.85rem 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--bg-secondary);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+details.fig-bar[open] {
+  border-color: var(--accent);
+}
+
+details.fig-bar > summary.fig-bar-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  user-select: none;
+}
+
+details.fig-bar > summary.fig-bar-summary::-webkit-details-marker,
+details.fig-bar > summary.fig-bar-summary::marker {
+  display: none !important;
+  content: "" !important;
+}
+
+.fig-bar-icon {
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+details.fig-bar[open] .fig-bar-icon {
+  transform: rotate(90deg);
+  color: var(--accent);
+}
+
+.fig-bar-title {
+  flex: 1;
+}
+
+.fig-bar-badge {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.fig-bar-content {
+  padding: 0.85rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  text-align: center;
+}
+
+.fig-bar-content img,
+.fig-bar-content video {
+  max-width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+.fig-bar-content figcaption {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+
+
+
+
+
