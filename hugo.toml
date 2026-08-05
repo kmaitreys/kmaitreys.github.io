@@ -21,7 +21,7 @@ enable = true
 delimiters = { inline = [['$', '$'], ['\\(', '\\)']], block = [['$$', '$$'], ['\\[', '\\]']] }
 [markup.highlight]
 noClasses = false
-style = "github"
+style = "onedark"
 [markup.tableOfContents]
 endLevel = 4
 startLevel = 2
