@@ -23,11 +23,7 @@
   </script>
 
   {{ $style := resources.Get "css/style.css" }}
-  {{ if $style }}
-    <link rel="stylesheet" href="{{ $style.RelPermalink }}">
-  {{ else }}
-    <link rel="stylesheet" href="/css/style.css">
-  {{ end }}
+  <link rel="stylesheet" href="{{ $style.RelPermalink }}">
 
   <!-- KaTeX LaTeX Math Styles & Auto-render Engine -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
@@ -55,10 +51,6 @@
   </div>
 
   {{ $mainJs := resources.Get "js/main.js" }}
-  {{ if $mainJs }}
-    <script src="{{ $mainJs.RelPermalink }}" defer></script>
-  {{ else }}
-    <script src="/js/main.js" defer></script>
-  {{ end }}
+  <script src="{{ $mainJs.RelPermalink }}" defer></script>
 </body>
 </html>
