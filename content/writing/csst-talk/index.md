@@ -28,6 +28,6 @@ To evaluate CPI-C performance, I developed an end-to-end synthetic observation p
 
 The simulations quantify the impact of coronagraphic suppression and instrument systematics on disk morphology and planet detectability. While nearby (10 pc) systems remain well resolved, typical star-forming regions (~140 pc) present significant challenges because much of the disk lies within the coronagraph's inner working angle.
 
-Current work focuses on improving the realism of the instrument noise model, extending the pipeline to better handle extended scattered-light sources, and investigating debris disks as alternative targets. Future simulations will couple **REBOUND** N-body integrations with scattered-light ray tracing to generate synthetic observations of debris disk systems.
+Current work focuses on improving the realism of the instrument noise model, extending the pipeline to better handle extended scattered-light sources, and investigating debris disks as alternative targets. Future simulations will couple `rebound` N-body integrations with scattered-light ray tracing to generate synthetic observations of debris disk systems.
 
 [^1]: We can also use something like `pyklip`.
