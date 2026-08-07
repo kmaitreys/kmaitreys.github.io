@@ -248,13 +248,13 @@
   }
 
   // ==========================================
-  // 6. Auto-transform Images & Videos to Collapsible 1-Line Figure Bars
+  // 6. Auto-transform Images & Videos to Styled Figure Containers (.fig-bar)
   // ==========================================
   function initFigBars() {
     const postContent = document.querySelector('.post-content');
     if (!postContent) return;
 
-    // 1. Convert standard markdown <img> elements to <details class="fig-bar">
+    // 1. Convert standard markdown <img> elements to <figure class="fig-bar">
     const images = Array.from(postContent.querySelectorAll('img')).filter(img => {
       return !img.closest('.badge') &&
              !img.closest('.fig-bar') &&
@@ -268,35 +268,27 @@
       const captionText = figcaption ? figcaption.textContent.trim() : (img.alt || '').trim();
       const src = img.src;
 
-      const title = captionText ? `Fig. ${figNum}: ${captionText}` : `Figure ${figNum}`;
-
-      const details = document.createElement('details');
-      details.className = 'fig-bar';
-      details.innerHTML = `
-        <summary class="fig-bar-summary">
-          <svg class="fig-bar-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-          <span class="fig-bar-title">${title}</span>
-          <span class="fig-bar-badge">Expand Figure</span>
-        </summary>
+      const figBar = document.createElement('figure');
+      figBar.className = 'fig-bar';
+      figBar.innerHTML = `
         <div class="fig-bar-content">
-          <img src="${src}" alt="${captionText}">
-          ${captionText ? `<figcaption>${captionText}</figcaption>` : ''}
+          <div class="fig-bar-media">
+            <img src="${src}" alt="${captionText}">
+            ${captionText ? `<figcaption>${captionText}</figcaption>` : ''}
+          </div>
         </div>
       `;
 
       const targetElement = figure || img;
-      targetElement.parentNode.replaceChild(details, targetElement);
+      targetElement.parentNode.replaceChild(figBar, targetElement);
     });
 
-    // 2. Convert standard <video> elements to <details class="fig-bar vid-bar">
+    // 2. Convert standard <video> elements to <figure class="fig-bar vid-bar">
     const videos = Array.from(postContent.querySelectorAll('video')).filter(vid => {
       return !vid.closest('.fig-bar');
     });
 
-    videos.forEach((vid, idx) => {
-      const vidNum = idx + 1;
+    videos.forEach((vid) => {
       const source = vid.querySelector('source');
       const src = vid.src || (source ? source.src : '');
       if (!src) return;
@@ -305,29 +297,21 @@
       const figcaption = figure ? figure.querySelector('figcaption') : null;
       const captionText = figcaption ? figcaption.textContent.trim() : (vid.getAttribute('data-caption') || vid.getAttribute('title') || '').trim();
 
-      const title = captionText ? `Video ${vidNum}: ${captionText}` : `Video ${vidNum}`;
-
-      const details = document.createElement('details');
-      details.className = 'fig-bar vid-bar';
-      details.innerHTML = `
-        <summary class="fig-bar-summary">
-          <svg class="fig-bar-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="23 7 16 12 23 17 23 7"></polygon>
-            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-          </svg>
-          <span class="fig-bar-title">${title}</span>
-          <span class="fig-bar-badge">Expand Video</span>
-        </summary>
+      const figBar = document.createElement('figure');
+      figBar.className = 'fig-bar vid-bar';
+      figBar.innerHTML = `
         <div class="fig-bar-content">
-          <video width="100%" controls preload="metadata">
-            <source src="${src}">
-          </video>
-          ${captionText ? `<figcaption>${captionText}</figcaption>` : ''}
+          <div class="fig-bar-media">
+            <video width="100%" controls preload="metadata">
+              <source src="${src}">
+            </video>
+            ${captionText ? `<figcaption>${captionText}</figcaption>` : ''}
+          </div>
         </div>
       `;
 
       const targetElement = figure || vid;
-      targetElement.parentNode.replaceChild(details, targetElement);
+      targetElement.parentNode.replaceChild(figBar, targetElement);
     });
   }
 

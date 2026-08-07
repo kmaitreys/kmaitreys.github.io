@@ -180,8 +180,7 @@ h6,
 .site-title,
 .site-title a,
 nav.main-nav a,
-.fig-bar-title,
-.fig-bar-badge {
+.fig-bar-title {
   text-transform: lowercase;
   letter-spacing: -0.01em;
 }
@@ -967,74 +966,31 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
 }
 
 /* ==========================================================================
-   Collapsible 1-Line Figure & Video Bars (.fig-bar)
+   Figure & Video Containers (.fig-bar)
    ========================================================================== */
 
-details.fig-bar {
-  margin: 0.85rem 0;
+.fig-bar {
+  margin: 1rem 0;
   border: 1px solid var(--border);
   border-radius: 6px;
   background-color: var(--bg-secondary);
+  padding: 0.75rem;
   overflow: hidden;
-  transition: border-color 0.15s ease;
-}
-
-details.fig-bar[open] {
-  border-color: var(--accent);
-}
-
-details.fig-bar>summary.fig-bar-summary {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 0.85rem;
-  cursor: pointer;
-  list-style: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text);
-  user-select: none;
-}
-
-details.fig-bar>summary.fig-bar-summary::-webkit-details-marker,
-details.fig-bar>summary.fig-bar-summary::marker {
-  display: none !important;
-  content: "" !important;
-}
-
-.fig-bar-icon {
-  color: var(--text-muted);
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-details.fig-bar[open] .fig-bar-icon {
-  transform: rotate(90deg);
-  color: var(--accent);
-}
-
-.fig-bar-title {
-  flex: 1;
-}
-
-.fig-bar-badge {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
 }
 
 .fig-bar-content {
-  padding: 0.85rem;
-  border-top: 1px solid var(--border);
-  background: var(--bg);
   text-align: center;
+}
+
+.fig-bar-media {
+  display: inline-block;
+  max-width: 100%;
+  text-align: left;
 }
 
 .fig-bar-content img,
 .fig-bar-content video {
+  display: block;
   max-width: 100%;
   max-height: 480px;
   object-fit: contain;
@@ -1043,7 +999,9 @@ details.fig-bar[open] .fig-bar-icon {
 }
 
 .fig-bar-content figcaption {
-  font-size: 0.8rem;
+  font-size: 0.825rem;
+  font-style: italic;
   color: var(--text-muted);
-  margin-top: 0.4rem;
+  margin-top: 0.5rem;
+  text-align: left;
 }
