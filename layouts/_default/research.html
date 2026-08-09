@@ -16,7 +16,7 @@
     {{ if .Params.items }}
     <ul class="item-list">
       {{ range .Params.items }}
-      <li>
+      <li id="{{ .title | urlize }}">
         <span class="item-date">{{ .date }}</span>
         <div class="item-content">
           <strong>{{ .title }}</strong>

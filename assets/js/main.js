@@ -35,10 +35,21 @@
     }
   }
 
+  // Helper functions for search
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function escapeRegExp(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
   // ==========================================
   // 2. Client-Side Instant Search (Cmd+K / /)
   // ==========================================
   let searchIndex = null;
+  let selectedIndex = -1;
 
   function initSearch() {
     const searchModal = document.getElementById('search-modal');
@@ -52,6 +63,7 @@
       searchModal.classList.add('active');
       searchInput.value = '';
       searchResults.innerHTML = '';
+      selectedIndex = -1;
       setTimeout(() => searchInput.focus(), 50);
 
       if (!searchIndex) {
@@ -66,11 +78,24 @@
 
     function closeSearch() {
       searchModal.classList.remove('active');
+      selectedIndex = -1;
     }
 
     searchTriggers.forEach(btn => btn.addEventListener('click', openSearch));
 
-    // Shortcut bindings
+    function updateSelection() {
+      const items = searchResults.querySelectorAll('li a');
+      items.forEach((item, index) => {
+        if (index === selectedIndex) {
+          item.classList.add('selected');
+          item.scrollIntoView({ block: 'nearest' });
+        } else {
+          item.classList.remove('selected');
+        }
+      });
+    }
+
+    // Shortcut & Keyboard bindings
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
@@ -79,8 +104,27 @@
       } else if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
         e.preventDefault();
         openSearch();
-      } else if (e.key === 'Escape' && searchModal.classList.contains('active')) {
-        closeSearch();
+      } else if (searchModal.classList.contains('active')) {
+        const items = searchResults.querySelectorAll('li a');
+        if (e.key === 'Escape') {
+          closeSearch();
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (items.length > 0) {
+            selectedIndex = (selectedIndex + 1) % items.length;
+            updateSelection();
+          }
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (items.length > 0) {
+            selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+            updateSelection();
+          }
+        } else if (e.key === 'Enter' && selectedIndex >= 0 && items[selectedIndex]) {
+          e.preventDefault();
+          items[selectedIndex].click();
+          closeSearch();
+        }
       }
     });
 
@@ -89,32 +133,96 @@
     });
 
     searchInput.addEventListener('input', () => {
-      const query = searchInput.value.trim().toLowerCase();
+      const rawQuery = searchInput.value.trim();
+      const query = rawQuery.toLowerCase();
+      selectedIndex = -1;
+
       if (!query || !searchIndex) {
         searchResults.innerHTML = '';
         return;
       }
 
-      const matches = searchIndex.filter(item => {
-        const inTitle = item.title && item.title.toLowerCase().includes(query);
-        const inContent = item.content && item.content.toLowerCase().includes(query);
-        const inSummary = item.summary && item.summary.toLowerCase().includes(query);
-        return inTitle || inContent || inSummary;
-      }).slice(0, 8);
+      const queryTokens = query.split(/\s+/).filter(Boolean);
+
+      const scored = [];
+      searchIndex.forEach(item => {
+        const titleLower = (item.title || '').toLowerCase();
+        const contentLower = (item.content || '').toLowerCase();
+        const summaryLower = (item.summary || '').toLowerCase();
+
+        const matchesAll = queryTokens.every(token =>
+          titleLower.includes(token) || contentLower.includes(token) || summaryLower.includes(token)
+        );
+
+        if (matchesAll) {
+          let score = 0;
+          if (titleLower.includes(query)) score += 100;
+          else if (titleLower.startsWith(queryTokens[0])) score += 50;
+          
+          if (summaryLower.includes(query)) score += 30;
+          if (contentLower.includes(query)) score += 20;
+
+          scored.push({ item, score });
+        }
+      });
+
+      scored.sort((a, b) => b.score - a.score);
+      const matches = scored.map(s => s.item).slice(0, 8);
 
       if (matches.length === 0) {
         searchResults.innerHTML = '<li style="padding: 1rem 1.25rem; color: var(--text-muted);">No matching posts or pages found.</li>';
         return;
       }
 
-      searchResults.innerHTML = matches.map(item => `
-        <li>
-          <a href="${item.permalink}">
-            <div class="res-title">${item.title}</div>
-            <div class="res-snippet">${item.summary || (item.content ? item.content.substring(0, 100) + '...' : '')}</div>
-          </a>
-        </li>
-      `).join('');
+      searchResults.innerHTML = matches.map(item => {
+        const titleText = item.title || '';
+        let snippetText = item.summary || item.content || '';
+
+        const contentLower = snippetText.toLowerCase();
+        let matchIdx = -1;
+        for (const token of queryTokens) {
+          const idx = contentLower.indexOf(token);
+          if (idx !== -1) {
+            matchIdx = idx;
+            break;
+          }
+        }
+
+        if (matchIdx !== -1 && snippetText.length > 100) {
+          const start = Math.max(0, matchIdx - 35);
+          const end = Math.min(snippetText.length, matchIdx + 75);
+          let rawSnippet = snippetText.substring(start, end);
+          if (start > 0) rawSnippet = '...' + rawSnippet;
+          if (end < snippetText.length) rawSnippet = rawSnippet + '...';
+          snippetText = rawSnippet;
+        } else if (snippetText.length > 120) {
+          snippetText = snippetText.substring(0, 120) + '...';
+        }
+
+        let highlightedTitle = escapeHtml(titleText);
+        let highlightedSnippet = escapeHtml(snippetText);
+
+        queryTokens.forEach(token => {
+          if (!token) return;
+          const regex = new RegExp(`(${escapeRegExp(token)})`, 'gi');
+          highlightedTitle = highlightedTitle.replace(regex, '<mark>$1</mark>');
+          highlightedSnippet = highlightedSnippet.replace(regex, '<mark>$1</mark>');
+        });
+
+        return `
+          <li>
+            <a href="${item.permalink}">
+              <div class="res-title">${highlightedTitle}</div>
+              <div class="res-snippet">${highlightedSnippet}</div>
+            </a>
+          </li>
+        `;
+      }).join('');
+
+      if (matches.length > 0) {
+        selectedIndex = 0;
+        updateSelection();
+      }
     });
   }
 

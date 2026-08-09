@@ -18,7 +18,7 @@
     {{ if .Params.publications }}
     <ul class="item-list">
       {{ range .Params.publications }}
-      <li>
+      <li id="{{ .title | urlize }}">
         <span class="item-date">{{ .date }}</span>
         <div class="item-content">
           <strong>{{ .title }}</strong><br>

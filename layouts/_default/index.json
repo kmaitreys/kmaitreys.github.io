@@ -1,12 +1,80 @@
 [
-  {{- range $index, $page := .Site.RegularPages -}}
-    {{- if $index }},{{ end -}}
-    {
-      "title": {{ $page.Title | jsonify }},
-      "permalink": {{ $page.RelPermalink | jsonify }},
-      "summary": {{ $page.Summary | plainify | jsonify }},
-      "content": {{ $page.Plain | jsonify }},
-      "date": {{ $page.Date.Format "2006-01-02" | jsonify }}
-    }
+{{- $pages := slice -}}
+{{- range .Site.Pages -}}
+  {{- if and (ne .Kind "taxonomy") (ne .Kind "term") .Title -}}
+    
+    {{/* Collect full page text */}}
+    {{- $contentParts := slice -}}
+    {{- if .Plain -}}
+      {{- $contentParts = $contentParts | append (.Plain | plainify) -}}
+    {{- end -}}
+    {{- if .Params.items -}}
+      {{- range .Params.items -}}
+        {{- if .title -}}{{- $contentParts = $contentParts | append (.title | plainify) -}}{{- end -}}
+        {{- if .description -}}{{- $contentParts = $contentParts | append (.description | plainify) -}}{{- end -}}
+        {{- if .institution -}}{{- $contentParts = $contentParts | append (.institution | plainify) -}}{{- end -}}
+        {{- if .supervisor -}}{{- $contentParts = $contentParts | append (.supervisor | plainify) -}}{{- end -}}
+        {{- if .details -}}{{- $contentParts = $contentParts | append (.details | plainify) -}}{{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if .Params.publications -}}
+      {{- range .Params.publications -}}
+        {{- if .title -}}{{- $contentParts = $contentParts | append (.title | plainify) -}}{{- end -}}
+        {{- if .authors -}}{{- $contentParts = $contentParts | append (.authors | plainify) -}}{{- end -}}
+        {{- if .journal -}}{{- $contentParts = $contentParts | append (.journal | plainify) -}}{{- end -}}
+        {{- if .volume -}}{{- $contentParts = $contentParts | append (.volume | plainify) -}}{{- end -}}
+        {{- if .doi -}}{{- $contentParts = $contentParts | append (.doi | plainify) -}}{{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $fullContent := delimit $contentParts " " -}}
+    {{- $mainItem := dict "title" .Title "permalink" .RelPermalink "summary" (.Summary | plainify) "content" $fullContent "date" (.Date.Format "2006-01-02") -}}
+    {{- $pages = $pages | append $mainItem -}}
+
+    {{/* Index sub-items for research, education, and publications */}}
+    {{- $pagePermalink := .RelPermalink -}}
+    {{- if .Params.items -}}
+      {{- range .Params.items -}}
+        {{- if .title -}}
+          {{- $subParts := slice .title -}}
+          {{- if .description -}}{{- $subParts = $subParts | append (.description | plainify) -}}{{- end -}}
+          {{- if .institution -}}{{- $subParts = $subParts | append (.institution | plainify) -}}{{- end -}}
+          {{- if .supervisor -}}{{- $subParts = $subParts | append (.supervisor | plainify) -}}{{- end -}}
+          {{- if .details -}}{{- $subParts = $subParts | append (.details | plainify) -}}{{- end -}}
+          {{- $anchor := printf "%s#%s" $pagePermalink (.title | urlize) -}}
+          {{- $subSummary := default (.description | plainify) (.details | plainify) -}}
+          {{- $subItem := dict "title" .title "permalink" $anchor "summary" $subSummary "content" (delimit $subParts " ") "date" (default "" .date) -}}
+          {{- $pages = $pages | append $subItem -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- if .Params.publications -}}
+      {{- range .Params.publications -}}
+        {{- if .title -}}
+          {{- $subParts := slice .title -}}
+          {{- if .authors -}}{{- $subParts = $subParts | append (.authors | plainify) -}}{{- end -}}
+          {{- if .journal -}}{{- $subParts = $subParts | append (.journal | plainify) -}}{{- end -}}
+          {{- if .volume -}}{{- $subParts = $subParts | append (.volume | plainify) -}}{{- end -}}
+          {{- $anchor := printf "%s#%s" $pagePermalink (.title | urlize) -}}
+          {{- $authorsPlain := (.authors | plainify) -}}
+          {{- $journalPlain := (.journal | plainify) -}}
+          {{- $subSummary := printf "%s — %s" $authorsPlain $journalPlain -}}
+          {{- $subItem := dict "title" .title "permalink" $anchor "summary" $subSummary "content" (delimit $subParts " ") "date" (default "" .date) -}}
+          {{- $pages = $pages | append $subItem -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
   {{- end -}}
+{{- end -}}
+{{- range $index, $item := $pages -}}
+  {{- if $index }},{{ end -}}
+  {
+    "title": {{ $item.title | jsonify }},
+    "permalink": {{ $item.permalink | jsonify }},
+    "summary": {{ $item.summary | jsonify }},
+    "content": {{ $item.content | jsonify }},
+    "date": {{ $item.date | jsonify }}
+  }
+{{- end -}}
 ]
