@@ -38,33 +38,26 @@
 <section class="publications-preview">
   <h2><a href="/publications/" class="plain">Recent Publications</a></h2>
   <ul class="item-list">
-    <li>
-      <span class="item-date">2026 · 02</span>
-      <div class="item-content">
-        <div class="item-title-wrapper">
-          <a href="https://doi.org/10.3847/1538-4365/ae278e" class="external-link item-title" target="_blank">Unveiling the Chemical Complexity and C/O Ratio of the HD 163296 Protoplanetary Disk</a>
+    {{ $pubPage := .Site.GetPage "/publications" }}
+    {{ if $pubPage }}
+      {{ range first 3 $pubPage.Params.publications }}
+      <li>
+        <span class="item-date">{{ .date }}</span>
+        <div class="item-content">
+          <div class="item-title-wrapper">
+            {{ if .doi }}
+              <a href="{{ .doi }}" class="external-link item-title" target="_blank">{{ .title }}</a>
+            {{ else }}
+              <span class="item-title">{{ .title }}</span>
+            {{ end }}
+          </div>
+          {{ if .journal }}
+            <div class="item-desc"><em>{{ .journal }}</em>{{ if .volume }}, {{ .volume }}{{ end }}</div>
+          {{ end }}
         </div>
-        <div class="item-desc"><em>The Astrophysical Journal Supplement Series (ApJS)</em></div>
-      </div>
-    </li>
-    <li>
-      <span class="item-date">2025 · 12</span>
-      <div class="item-content">
-        <div class="item-title-wrapper">
-          <a href="https://doi.org/10.3847/1538-4365/ae112f" class="external-link item-title" target="_blank">Expanding the Ice Inventory of NGC 1333 IRAS 2A with INDRA Using JWST Observations</a>
-        </div>
-        <div class="item-desc"><em>The Astrophysical Journal Supplement Series (ApJS)</em></div>
-      </div>
-    </li>
-    <li>
-      <span class="item-date">2025 · 07</span>
-      <div class="item-content">
-        <div class="item-title-wrapper">
-          <a href="https://doi.org/10.1051/0004-6361/202554717" class="external-link item-title" target="_blank">Role of Diffusive and Nondiffusive Grain-Surface Processes in Cold Cores: Insights from PEGASIS</a>
-        </div>
-        <div class="item-desc"><em>Astronomy & Astrophysics (A&A)</em></div>
-      </div>
-    </li>
+      </li>
+      {{ end }}
+    {{ end }}
   </ul>
   <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);">
     View full publication details on my <a href="/publications/">Publications Page</a>, <a href="https://scholar.google.com/citations?user={{ .Site.Params.scholar }}" class="external-link" target="_blank">Google Scholar</a>, or <a href="https://orcid.org/{{ .Site.Params.orcid }}" class="external-link" target="_blank">ORCID profile</a>.
