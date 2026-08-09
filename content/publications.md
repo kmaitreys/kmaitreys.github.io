@@ -25,4 +25,4 @@ publications:
     doi: "https://doi.org/10.1051/0004-6361/202554717"
 ---
 
-All of my refereed publications can also be viewed on [ADS / SciX](https://ui.adsabs.harvard.edu/public-libraries/xbMofUwuTMGGPxG1Mm2nhg) and [Google Scholar](https://scholar.google.com/citations?user=r5841owAAAAJ&hl).
+All of my refereed publications can also be viewed on [ADS](https://ui.adsabs.harvard.edu/public-libraries/xbMofUwuTMGGPxG1Mm2nhg) / [SciX](https://scixplorer.org/public-libraries/xbMofUwuTMGGPxG1Mm2nhg) and [Google Scholar](https://scholar.google.com/citations?user=r5841owAAAAJ&hl).
