@@ -613,6 +613,41 @@
     });
   }
 
+  // ==========================================
+  // 8. Chinese Name Tooltip (Touch / Tap to Peek)
+  // ==========================================
+  function initChineseNameTooltip() {
+    const wrap = document.querySelector('.chinese-name-wrapper');
+    if (!wrap) return;
+
+    let hideTimer = null;
+
+    wrap.addEventListener('click', (e) => {
+      // Prevent parent <a> tag navigation when tapping specifically on the Chinese name
+      e.preventDefault();
+      e.stopPropagation();
+
+      const isVisible = wrap.classList.contains('is-visible');
+      if (isVisible) {
+        wrap.classList.remove('is-visible');
+        if (hideTimer) clearTimeout(hideTimer);
+      } else {
+        wrap.classList.add('is-visible');
+        if (hideTimer) clearTimeout(hideTimer);
+        hideTimer = setTimeout(() => {
+          wrap.classList.remove('is-visible');
+        }, 2500);
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!wrap.contains(e.target)) {
+        wrap.classList.remove('is-visible');
+        if (hideTimer) clearTimeout(hideTimer);
+      }
+    });
+  }
+
   // Initialize all features on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
@@ -622,6 +657,7 @@
     initMarginLayout();
     initFigBars();
     initImageZoom();
+    initChineseNameTooltip();
   });
 })();
 

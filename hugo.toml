@@ -28,6 +28,8 @@ startLevel = 2
 
 [params]
 name = "S. Maitrey"
+chinese_name = "沙宇仁"
+chinese_name_pinyin = "Shā Yǔrén"
 title = "S. Maitrey"
 description = "Graduate Student in Astronomy & Astrophysics. Planet Formation, Protoplanetary Disks, Astrochemistry, Exoplanets."
 position = "PhD Student / Researcher"

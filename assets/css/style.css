@@ -360,8 +360,78 @@ header.site-header {
 }
 
 .site-title a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
   text-decoration: none;
   color: var(--text);
+}
+
+.chinese-name-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  cursor: pointer;
+}
+
+.chinese-name {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.site-title a:hover .chinese-name,
+.chinese-name-wrapper:hover .chinese-name {
+  color: var(--text-muted);
+}
+
+.chinese-tooltip {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(3px);
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  padding: 4px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px var(--tooltip-shadow);
+  z-index: 50;
+}
+
+.chinese-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: var(--border) transparent transparent transparent;
+}
+
+.chinese-name-wrapper:hover .chinese-tooltip,
+.chinese-name-wrapper:focus-within .chinese-tooltip,
+.chinese-name-wrapper.is-visible .chinese-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
 nav.main-nav {

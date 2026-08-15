@@ -1,7 +1,17 @@
 <header class="site-header">
   <div class="header-top">
     <div class="site-title">
-      <a href="{{ "" | relURL }}">{{ .Site.Title }}</a>
+      <a href="{{ "" | relURL }}">
+        <span class="site-title-name">{{ .Site.Title }}</span>
+        {{ if .Site.Params.chinese_name }}
+          <span class="chinese-name-wrapper">
+            <span class="chinese-name" lang="zh-Hans">{{ .Site.Params.chinese_name }}</span>
+            {{ if .Site.Params.chinese_name_pinyin }}
+              <span class="chinese-tooltip" role="tooltip">{{ .Site.Params.chinese_name_pinyin }}</span>
+            {{ end }}
+          </span>
+        {{ end }}
+      </a>
     </div>
 
     <div class="nav-actions">
