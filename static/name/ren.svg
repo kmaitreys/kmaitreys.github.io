@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" width="500" height="500">
+  <title id="title">Stroke order for character "仁"</title>
+  <desc id="desc">Animated stroke order for "仁" with 4 stroke(s).</desc>
+  <style>
+    @keyframes draw-stroke {
+      to { stroke-dashoffset: 0; opacity: 1; }
+    }
+    :root {
+      --bg: #ffffff;
+      --grid: rgba(0, 0, 0, 0.08);
+      --radical: #d9383a;
+      --stem: #111111;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121316;
+        --grid: rgba(255, 255, 255, 0.08);
+        --radical: #ff4d4f;
+        --stem: #e6e8ec;
+      }
+    }
+    .bg { fill: var(--bg); }
+    .grid { stroke: var(--grid); stroke-width: 1.5; stroke-dasharray: 6,6; }
+    .radical { stroke: var(--radical); }
+    .stem { stroke: var(--stem); }
+  </style>
+  <g>
+    <rect x="0" y="0" width="500" height="500" class="bg"></rect>
+    <line x1="0" y1="250" x2="500" y2="250" class="grid"></line>
+    <line x1="250" y1="0" x2="250" y2="500" class="grid"></line>
+  </g>
+  <defs>
+    <clipPath id="mask-1"><path d="M 255 508 Q 303 569 356 651 Q 387 706 415 731 Q 425 743 421 759 Q 417 774 385 800 Q 354 821 333 821 Q 312 820 321 794 Q 336 758 322 728 Q 277 626 211 532 Q 147 441 60 343 Q 48 331 46 324 Q 42 311 58 314 Q 104 323 226 474 Q 226 475 228 476 L 255 508 Z"></path></clipPath>
+    <clipPath id="mask-2"><path d="M 228 476 Q 252 407 255 396 Q 254 395 255 392 Q 255 212 223 91 Q 210 45 245 -7 Q 246 -11 251 -15 Q 270 -33 283 -3 Q 299 40 298 90 Q 302 354 311 413 Q 320 443 308 454 Q 268 500 255 508 C 232 527 218 504 228 476 Z"></path></clipPath>
+    <clipPath id="mask-3"><path d="M 479 542 Q 434 533 467 514 Q 516 487 600 507 Q 679 525 762 544 Q 802 554 808 561 Q 818 571 812 581 Q 803 596 767 604 Q 728 610 637 575 Q 510 547 479 542 Z"></path></clipPath>
+    <clipPath id="mask-4"><path d="M 359 221 Q 334 220 352 199 Q 368 183 389 177 Q 413 170 431 176 Q 593 215 874 214 Q 890 214 907 213 Q 929 213 935 222 Q 942 235 923 252 Q 863 295 820 288 Q 702 264 359 221 Z"></path></clipPath>
+  </defs>
+  <g transform="translate(10, 431.875) scale(0.46875, -0.46875)">
+    <g style="opacity: 1;">
+      <path clip-path="url(#mask-1)" class="radical" d="M 256.5 869.4 L 352 789 L 373 752 L 317 646 L 187 459 L 121 383 L 56 324" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="703.454" style="opacity: 0; stroke-dashoffset: 703.454; animation: 800ms linear 0ms 1 normal forwards running draw-stroke;"></path>
+      <path clip-path="url(#mask-2)" class="radical" d="M 240.8 599.1 L 258 470 L 280 433 L 282 407 L 274 215 L 258 61 L 263 -7" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="614.543" style="opacity: 0; stroke-dashoffset: 614.543; animation: 800ms linear 1000ms 1 normal forwards running draw-stroke;"></path>
+      <path clip-path="url(#mask-3)" class="stem" d="M 372.5 556.3 L 491 524 L 539 526 L 744 573 L 799 573" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="436.184" style="opacity: 0; stroke-dashoffset: 436.184; animation: 800ms linear 2000ms 1 normal forwards running draw-stroke;"></path>
+      <path clip-path="url(#mask-4)" class="stem" d="M 256.5 227.3 L 412 200 L 575 226 L 836 252 L 923 229" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="675.22" style="opacity: 0; stroke-dashoffset: 675.22; animation: 800ms linear 3000ms 1 normal forwards running draw-stroke;"></path>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" width="500" height="500">
+  <title id="title">Stroke order for character "沙"</title>
+  <desc id="desc">Animated stroke order for "沙" with 7 stroke(s).</desc>
+  <style>
+    @keyframes draw-stroke {
+      to { stroke-dashoffset: 0; opacity: 1; }
+    }
+    :root {
+      --bg: #ffffff;
+      --grid: rgba(0, 0, 0, 0.08);
+      --radical: #d9383a;
+      --stem: #111111;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121316;
+        --grid: rgba(255, 255, 255, 0.08);
+        --radical: #ff4d4f;
+        --stem: #e6e8ec;
+      }
+    }
+    .bg { fill: var(--bg); }
+    .grid { stroke: var(--grid); stroke-width: 1.5; stroke-dasharray: 6,6; }
+    .radical { stroke: var(--radical); }
+    .stem { stroke: var(--stem); }
+  </style>
+  <g>
+    <rect x="0" y="0" width="500" height="500" class="bg"></rect>
+    <line x1="0" y1="250" x2="500" y2="250" class="grid"></line>
+    <line x1="250" y1="0" x2="250" y2="500" class="grid"></line>
+  </g>
+  <defs>
+    <clipPath id="mask-1"><path d="M 234 719 Q 262 694 293 663 Q 308 648 326 649 Q 339 649 344 665 Q 350 681 340 716 Q 328 750 229 774 Q 211 778 204 775 Q 198 771 200 756 Q 204 743 234 719 Z"></path></clipPath>
+    <clipPath id="mask-2"><path d="M 144 512 Q 198 455 235 441 Q 250 438 259 453 Q 265 466 262 483 Q 247 525 158 551 Q 157 552 156 552 Q 138 556 129 552 Q 123 551 126 538 Q 127 526 144 512 Z"></path></clipPath>
+    <clipPath id="mask-3"><path d="M 138 178 Q 125 175 128 157 Q 140 79 176 59 Q 183 52 194 54 Q 201 55 203 82 Q 213 139 324 403 Q 331 419 331 426 Q 330 436 321 429 Q 305 420 183 224 Q 168 202 138 178 Z"></path></clipPath>
+    <clipPath id="mask-4"><path d="M 566 792 Q 602 731 587 467 Q 577 413 593 378 Q 594 375 596 371 Q 606 355 622 364 Q 634 374 635 454 Q 626 532 646 687 Q 647 715 666 753 Q 673 763 661 778 Q 603 823 573 812 Q 560 808 566 792 Z"></path></clipPath>
+    <clipPath id="mask-5"><path d="M 447 566 Q 425 508 393 455 Q 372 428 392 388 Q 401 372 421 384 Q 443 400 456 433 Q 474 473 474 509 Q 478 543 471 567 Q 465 576 460 576 Q 451 575 447 566 Z"></path></clipPath>
+    <clipPath id="mask-6"><path d="M 764 610 Q 821 576 890 525 Q 912 507 929 506 Q 939 506 945 519 Q 955 535 931 580 Q 913 620 834 634 Q 785 641 758 644 Q 748 648 748 634 Q 751 619 764 610 Z"></path></clipPath>
+    <clipPath id="mask-7"><path d="M 718 485 Q 718 305 523 123 Q 511 114 500 104 Q 442 49 302 -40 Q 292 -47 299 -52 Q 308 -56 321 -52 Q 526 17 634 162 Q 695 234 757 360 Q 776 397 802 433 Q 812 443 807 455 Q 800 467 768 490 Q 746 506 734 505 Q 718 502 718 485 Z"></path></clipPath>
+  </defs>
+  <g transform="translate(10, 431.875) scale(0.46875, -0.46875)">
+    <g style="opacity: 1;">
+      <path clip-path="url(#mask-1)" class="radical" d="M 126.5 822 L 301 707 L 325 668" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="254.779" style="opacity: 0; stroke-dashoffset: 254.779; animation: 800ms linear 0ms 1 normal forwards running draw-stroke;"></path>
+      <path clip-path="url(#mask-2)" class="radical" d="M 52.8 598.5 L 223 485 L 240 462" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="233.174" style="opacity: 0; stroke-dashoffset: 233.174; animation: 800ms linear 1000ms 1 normal forwards running draw-stroke;"></path>
+      <path clip-path="url(#mask-3)" class="radical" d="M 223.2 -30 L 177 97 L 175 148 L 324 422" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="498.074" style="opacity: 0; stroke-dashoffset: 498.074; animation: 800ms linear 2000ms 1 normal forwards running draw-stroke;"></path>
+      <path clip-path="url(#mask-4)" class="stem" d="M 492.8 855.5 L 600 784 L 621 754 L 609 503 L 612 375" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="544.798" style="opacity: 0; stroke-dashoffset: 544.798; animation: 800ms linear 3000ms 1 normal forwards running draw-stroke;"></path>
+      <path clip-path="url(#mask-5)" class="stem" d="M 481.6 662.6 L 441 479 L 408 397" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="276.427" style="opacity: 0; stroke-dashoffset: 276.427; animation: 800ms linear 4000ms 1 normal forwards running draw-stroke;"></path>
+      <path clip-path="url(#mask-6)" class="stem" d="M 668.4 668.7 L 869 587 L 896 567 L 928 524" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="303.8" style="opacity: 0; stroke-dashoffset: 303.8; animation: 800ms linear 5000ms 1 normal forwards running draw-stroke;"></path>
+      <path clip-path="url(#mask-7)" class="stem" d="M 685.8 573.5 L 754 456 L 756 437 L 690 288 L 626 193 L 560 119 L 481 53 L 357 -24 L 305 -47" stroke-width="200" fill="none" stroke-linecap="round" stroke-linejoin="miter" stroke-dasharray="837.393" style="opacity: 0; stroke-dashoffset: 837.393; animation: 800ms linear 6000ms 1 normal forwards running draw-stroke;"></path>
+    </g>
+  </g>
+</svg>
