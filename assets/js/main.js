@@ -648,6 +648,84 @@
     });
   }
 
+  // ==========================================
+  // 9. Synchronized Chinese Name Stroke Order Animation
+  // ==========================================
+  function initChineseStrokeAnimation() {
+    const container = document.getElementById('chinese-name-strokes');
+    if (!container) return;
+
+    const replayBtn = container.querySelector('#stroke-replay-btn');
+    const loopBtn = container.querySelector('#stroke-loop-btn');
+    const cards = container.querySelectorAll('.stroke-card');
+
+    let isLooping = false;
+    let animTimeout = null;
+    const ANIMATION_DURATION = 6800; // 7 strokes: (6 * 1000ms) + 800ms
+    const LOOP_PAUSE = 2200; // Pause at completion before looping
+
+    function startAnimation() {
+      if (animTimeout) clearTimeout(animTimeout);
+
+      container.classList.remove('is-animating', 'is-completed');
+      // Trigger DOM reflow to restart CSS animations in sync
+      void container.offsetWidth;
+      container.classList.add('is-animating');
+
+      animTimeout = setTimeout(() => {
+        if (isLooping) {
+          animTimeout = setTimeout(() => {
+            startAnimation();
+          }, LOOP_PAUSE);
+        } else {
+          container.classList.remove('is-animating');
+          container.classList.add('is-completed');
+        }
+      }, ANIMATION_DURATION);
+    }
+
+    if (replayBtn) {
+      replayBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        startAnimation();
+      });
+    }
+
+    if (loopBtn) {
+      loopBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        isLooping = !isLooping;
+        loopBtn.classList.toggle('active', isLooping);
+        if (isLooping && !container.classList.contains('is-animating')) {
+          startAnimation();
+        }
+      });
+    }
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        startAnimation();
+      });
+    });
+
+    // Auto-start when scrolled into viewport
+    if ('IntersectionObserver' in window) {
+      let hasTriggered = false;
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !hasTriggered) {
+            hasTriggered = true;
+            startAnimation();
+            observer.unobserve(container);
+          }
+        });
+      }, { threshold: 0.25 });
+      observer.observe(container);
+    } else {
+      startAnimation();
+    }
+  }
+
   // Initialize all features on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
@@ -658,8 +736,10 @@
     initFigBars();
     initImageZoom();
     initChineseNameTooltip();
+    initChineseStrokeAnimation();
   });
 })();
+
 
 
 

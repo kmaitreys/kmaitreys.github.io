@@ -1175,3 +1175,269 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
 .image-zoom-close:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* ==========================================================================
+   Chinese Name Stroke Order Animation (Theme-adaptive)
+   ========================================================================== */
+
+:root {
+  --stroke-bg: #ffffff;
+  --stroke-grid-line: rgba(0, 0, 0, 0.07);
+  --stroke-radical: #d9383a;
+  --stroke-stem: #111111;
+}
+
+.theme-dark {
+  --stroke-bg: #121316;
+  --stroke-grid-line: rgba(255, 255, 255, 0.08);
+  --stroke-radical: #ff4d4f;
+  --stroke-stem: #e6e8ec;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.theme-light) {
+    --stroke-bg: #121316;
+    --stroke-grid-line: rgba(255, 255, 255, 0.08);
+    --stroke-radical: #ff4d4f;
+    --stroke-stem: #e6e8ec;
+  }
+}
+
+@keyframes draw-stroke {
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+.chinese-stroke-anim {
+  margin: 2rem 0 1.5rem;
+  padding: 1.15rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.stroke-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+}
+
+.stroke-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.stroke-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.stroke-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.45rem 0.65rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+  font-size: 0.8rem;
+}
+
+.stroke-char {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text);
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.stroke-pinyin {
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.stroke-meta {
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+
+.stroke-svg-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--stroke-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stroke-char-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.stroke-grid-bg {
+  fill: var(--stroke-bg);
+}
+
+.stroke-grid-line {
+  stroke: var(--stroke-grid-line);
+  stroke-width: 1.5;
+  stroke-dasharray: 6,6;
+}
+
+.stroke-path {
+  opacity: 0;
+}
+
+.stroke-path.stroke-radical {
+  stroke: var(--stroke-radical);
+}
+
+.stroke-path.stroke-stem {
+  stroke: var(--stroke-stem);
+}
+
+.chinese-stroke-anim.is-animating .stroke-s1 {
+  animation: draw-stroke 800ms linear 0ms 1 normal forwards running;
+}
+.chinese-stroke-anim.is-animating .stroke-s2 {
+  animation: draw-stroke 800ms linear 1000ms 1 normal forwards running;
+}
+.chinese-stroke-anim.is-animating .stroke-s3 {
+  animation: draw-stroke 800ms linear 2000ms 1 normal forwards running;
+}
+.chinese-stroke-anim.is-animating .stroke-s4 {
+  animation: draw-stroke 800ms linear 3000ms 1 normal forwards running;
+}
+.chinese-stroke-anim.is-animating .stroke-s5 {
+  animation: draw-stroke 800ms linear 4000ms 1 normal forwards running;
+}
+.chinese-stroke-anim.is-animating .stroke-s6 {
+  animation: draw-stroke 800ms linear 5000ms 1 normal forwards running;
+}
+.chinese-stroke-anim.is-animating .stroke-s7 {
+  animation: draw-stroke 800ms linear 6000ms 1 normal forwards running;
+}
+
+.chinese-stroke-anim.is-completed .stroke-path {
+  stroke-dashoffset: 0 !important;
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+.stroke-anim-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.stroke-anim-caption {
+  flex: 1;
+  font-size: 0.82rem;
+}
+
+.radical-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text-muted);
+}
+
+.radical-legend-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--stroke-radical);
+}
+
+.stroke-credit-link {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+
+.stroke-credit-link:hover {
+  color: var(--link-hover);
+}
+
+
+.stroke-anim-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stroke-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.stroke-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-muted);
+}
+
+.stroke-loop-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.loop-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--text-dim);
+  transition: background-color 0.15s ease;
+}
+
+.stroke-loop-btn.active .loop-dot {
+  background-color: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 580px) {
+  .stroke-cards-grid {
+    gap: 0.5rem;
+  }
+  .stroke-anim-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .stroke-card-header {
+    padding: 0.35rem 0.45rem;
+  }
+  .stroke-meta {
+    display: none;
+  }
+}
