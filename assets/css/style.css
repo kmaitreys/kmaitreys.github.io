@@ -1250,6 +1250,8 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
   border: 1px solid var(--border);
   border-radius: 6px;
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;

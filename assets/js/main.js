@@ -702,12 +702,6 @@
       });
     }
 
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        startAnimation();
-      });
-    });
-
     // Auto-start when scrolled into viewport (with generous mobile threshold & rootMargin)
     let hasTriggered = false;
 
