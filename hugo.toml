@@ -18,7 +18,25 @@ unsafe = true
 [markup.goldmark.extensions]
 [markup.goldmark.extensions.passthrough]
 enable = true
-delimiters = { inline = [['$', '$'], ['\\(', '\\)']], block = [['$$', '$$'], ['\\[', '\\]']] }
+delimiters = { inline = [
+  [
+    '$',
+    '$',
+  ],
+  [
+    '\\(',
+    '\\)',
+  ],
+], block = [
+  [
+    '$$',
+    '$$',
+  ],
+  [
+    '\\[',
+    '\\]',
+  ],
+] }
 [markup.highlight]
 noClasses = false
 style = "onedark"
@@ -31,9 +49,9 @@ name = "S. Maitrey"
 chinese_name = "沙宇仁"
 chinese_name_pinyin = "Shā Yǔrén"
 chinese_name_ruby = [
-  { char = "沙", pinyin = "Shā" },
+  { char = "沙", pinyin = "shā" },
   { char = "宇", pinyin = "yǔ" },
-  { char = "仁", pinyin = "rén" }
+  { char = "仁", pinyin = "rén" },
 ]
 title = "S. Maitrey"
 description = "Graduate Student in Astronomy & Astrophysics. Planet Formation, Protoplanetary Disks, Astrochemistry, Exoplanets."
