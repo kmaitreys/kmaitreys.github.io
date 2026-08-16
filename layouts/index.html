@@ -1,16 +1,6 @@
 {{ define "main" }}
 <section class="intro-section">
-  <p style="font-size: 1.15rem; line-height: 1.6; margin-bottom: 1.25rem;">
-    Hi! I am <strong>S. Maitrey</strong>, a Graduate Student entering my PhD in Astronomy and Astrophysics at the <a href="{{ .Site.Params.affiliation_url }}" class="external-link" target="_blank">Kavli Institute for Astronomy and Astrophysics (KIAA), Peking University</a>.
-  </p>
-
-  <p>
-    My research focuses on <strong>Planet Formation</strong>, <strong>Protoplanetary Disk Modeling</strong>, and <strong>Astrochemistry</strong>. I build models to study planet-forming regions and trace the chemical and physical evolution of gas and dust from molecular clouds to planetary systems, using observational constraints from facilities like <a href="https://www.almaobservatory.org/" class="external-link" target="_blank">ALMA</a> and <a href="https://webbtelescope.org/" class="external-link" target="_blank">JWST</a>.
-  </p>
-
-  <p>
-    Previously, I worked as a project fellow at the <a href="https://www.niser.ac.in/" class="external-link" target="_blank">School of Earth and Planetary Sciences, NISER Bhubaneswar</a>.
-  </p>
+  {{ .Content }}
 </section>
 
 <hr>

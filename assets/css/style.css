@@ -220,6 +220,12 @@ p {
   color: var(--text);
 }
 
+.intro-section > p:first-of-type {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
 .tabular-num,
 time,
 .date-col {
