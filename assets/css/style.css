@@ -1177,7 +1177,7 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
 }
 
 /* ==========================================================================
-   Chinese Name Stroke Order Animation (Theme-adaptive)
+   Chinese Name Stroke Order Animation (Theme-adaptive & Mobile-optimized)
    ========================================================================== */
 
 :root {
@@ -1204,7 +1204,26 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
 }
 
 @keyframes draw-stroke {
-  to {
+  0% {
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes draw-stroke {
+  0% {
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
     stroke-dashoffset: 0;
     opacity: 1;
   }
@@ -1232,6 +1251,8 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
   border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
@@ -1283,6 +1304,8 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
   width: 100%;
   height: 100%;
   display: block;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .stroke-grid-bg {
@@ -1297,6 +1320,7 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
 
 .stroke-path {
   opacity: 0;
+  will-change: stroke-dashoffset, opacity;
 }
 
 .stroke-path.stroke-radical {
@@ -1307,32 +1331,53 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
   stroke: var(--stroke-stem);
 }
 
+.chinese-stroke-anim.is-animating .stroke-path {
+  -webkit-animation-name: draw-stroke;
+  animation-name: draw-stroke;
+  -webkit-animation-duration: 800ms;
+  animation-duration: 800ms;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation-play-state: running;
+  animation-play-state: running;
+}
+
 .chinese-stroke-anim.is-animating .stroke-s1 {
-  animation: draw-stroke 800ms linear 0ms 1 normal forwards running;
+  -webkit-animation-delay: 0ms;
+  animation-delay: 0ms;
 }
 .chinese-stroke-anim.is-animating .stroke-s2 {
-  animation: draw-stroke 800ms linear 1000ms 1 normal forwards running;
+  -webkit-animation-delay: 1000ms;
+  animation-delay: 1000ms;
 }
 .chinese-stroke-anim.is-animating .stroke-s3 {
-  animation: draw-stroke 800ms linear 2000ms 1 normal forwards running;
+  -webkit-animation-delay: 2000ms;
+  animation-delay: 2000ms;
 }
 .chinese-stroke-anim.is-animating .stroke-s4 {
-  animation: draw-stroke 800ms linear 3000ms 1 normal forwards running;
+  -webkit-animation-delay: 3000ms;
+  animation-delay: 3000ms;
 }
 .chinese-stroke-anim.is-animating .stroke-s5 {
-  animation: draw-stroke 800ms linear 4000ms 1 normal forwards running;
+  -webkit-animation-delay: 4000ms;
+  animation-delay: 4000ms;
 }
 .chinese-stroke-anim.is-animating .stroke-s6 {
-  animation: draw-stroke 800ms linear 5000ms 1 normal forwards running;
+  -webkit-animation-delay: 5000ms;
+  animation-delay: 5000ms;
 }
 .chinese-stroke-anim.is-animating .stroke-s7 {
-  animation: draw-stroke 800ms linear 6000ms 1 normal forwards running;
+  -webkit-animation-delay: 6000ms;
+  animation-delay: 6000ms;
 }
 
 .chinese-stroke-anim.is-completed .stroke-path {
   stroke-dashoffset: 0 !important;
   opacity: 1 !important;
   animation: none !important;
+  -webkit-animation: none !important;
 }
 
 .stroke-anim-footer {
@@ -1377,30 +1422,38 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
   color: var(--link-hover);
 }
 
-
 .stroke-anim-controls {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .stroke-btn {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
-  padding: 0.3rem 0.65rem;
+  padding: 0.32rem 0.65rem;
   font-size: 0.78rem;
   font-family: inherit;
   font-weight: 500;
+  line-height: 1.2;
   color: var(--text);
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.stroke-btn:hover {
+.stroke-btn:hover,
+.stroke-btn:active {
   background: var(--bg-hover);
   border-color: var(--text-muted);
 }
@@ -1426,18 +1479,44 @@ details.footnote-details>summary.footnote-summary:hover .footnote-ref-num {
 }
 
 @media (max-width: 580px) {
-  .stroke-cards-grid {
-    gap: 0.5rem;
+  .chinese-stroke-anim {
+    padding: 0.75rem;
+    margin: 1.5rem 0 1rem;
   }
-  .stroke-anim-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.6rem;
+  .stroke-cards-grid {
+    gap: 0.45rem;
   }
   .stroke-card-header {
-    padding: 0.35rem 0.45rem;
+    padding: 0.3rem 0.4rem;
+  }
+  .stroke-char {
+    font-size: 0.95rem;
+  }
+  .stroke-pinyin {
+    font-size: 0.75rem;
   }
   .stroke-meta {
     display: none;
+  }
+  .stroke-anim-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.65rem;
+    margin-top: 0.65rem;
+  }
+  .stroke-anim-caption {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+  .stroke-btn {
+    padding: 0.28rem 0.5rem;
+    font-size: 0.72rem;
+  }
+  .stroke-btn svg {
+    width: 12px;
+    height: 12px;
   }
 }

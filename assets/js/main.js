@@ -708,22 +708,38 @@
       });
     });
 
-    // Auto-start when scrolled into viewport
+    // Auto-start when scrolled into viewport (with generous mobile threshold & rootMargin)
+    let hasTriggered = false;
+
+    function triggerAutoStart() {
+      if (!hasTriggered) {
+        hasTriggered = true;
+        startAnimation();
+      }
+    }
+
     if ('IntersectionObserver' in window) {
-      let hasTriggered = false;
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting && !hasTriggered) {
-            hasTriggered = true;
-            startAnimation();
-            observer.unobserve(container);
+          if (entry.isIntersecting) {
+            triggerAutoStart();
+            observer.disconnect();
           }
         });
-      }, { threshold: 0.25 });
+      }, { threshold: 0.05, rootMargin: '80px 0px 80px 0px' });
       observer.observe(container);
     } else {
-      startAnimation();
+      triggerAutoStart();
     }
+
+    // Scroll fallback for mobile edge cases
+    window.addEventListener('scroll', () => {
+      if (hasTriggered) return;
+      const rect = container.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        triggerAutoStart();
+      }
+    }, { passive: true, once: true });
   }
 
   // Initialize all features on DOM ready
