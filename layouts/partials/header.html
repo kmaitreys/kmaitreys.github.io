@@ -79,4 +79,23 @@
       </a>
     {{ end }}
   </nav>
+
+  {{ if and (not .IsHome) .Title }}
+  <div class="sticky-page-title-bar" id="sticky-page-title-bar" aria-hidden="true">
+    <div class="sticky-page-title-inner" title="Click to scroll to top">
+      <span class="sticky-page-title-text">{{ .Title }}</span>
+      {{ if eq .Section "writing" }}
+        {{ if .Date }}
+          <span class="sticky-page-title-date tabular-num"><time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "2006 · 01" }}</time></span>
+        {{ end }}
+      {{ else }}
+        {{ $modDate := .Lastmod }}
+        {{ if not $modDate }}{{ $modDate = .Date }}{{ end }}
+        {{ if $modDate }}
+          <span class="sticky-page-title-date tabular-num">Last updated: <time datetime="{{ $modDate.Format "2006-01-02T15:04:05Z07:00" }}">{{ $modDate.Format "2006 · 01" }}</time></span>
+        {{ end }}
+      {{ end }}
+    </div>
+  </div>
+  {{ end }}
 </header>

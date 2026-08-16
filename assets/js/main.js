@@ -751,6 +751,60 @@
     }, { passive: true, once: true });
   }
 
+  // ==========================================
+  // 10. Sticky Page / Post Title on Scroll
+  // ==========================================
+  function initStickyPageTitle() {
+    const stickyBar = document.getElementById('sticky-page-title-bar');
+    if (!stickyBar) return;
+
+    const mainHeading = document.querySelector('article .post-header h1, .list-section h1, main h1');
+    if (!mainHeading) return;
+
+    // Smooth scroll back to top when clicked
+    stickyBar.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    const headerElem = document.querySelector('header.site-header');
+
+    function checkPosition() {
+      const headerHeight = headerElem ? headerElem.getBoundingClientRect().height : 75;
+      const rect = mainHeading.getBoundingClientRect();
+      // If the bottom of the original h1 has scrolled above the header bottom
+      if (rect.bottom <= headerHeight + 10) {
+        stickyBar.classList.add('is-visible');
+        stickyBar.setAttribute('aria-hidden', 'false');
+      } else {
+        stickyBar.classList.remove('is-visible');
+        stickyBar.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting && entry.boundingClientRect.top < 120) {
+            stickyBar.classList.add('is-visible');
+            stickyBar.setAttribute('aria-hidden', 'false');
+          } else {
+            stickyBar.classList.remove('is-visible');
+            stickyBar.setAttribute('aria-hidden', 'true');
+          }
+        });
+      }, {
+        rootMargin: '-85px 0px 0px 0px',
+        threshold: 0
+      });
+
+      observer.observe(mainHeading);
+    }
+
+    // Scroll listener ensures immediate responsiveness on rapid scrolling / touch inertia
+    window.addEventListener('scroll', checkPosition, { passive: true });
+    checkPosition();
+  }
+
   // Initialize all features on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
@@ -762,6 +816,7 @@
     initImageZoom();
     initChineseNameRuby();
     initChineseStrokeAnimation();
+    initStickyPageTitle();
   });
 })();
 

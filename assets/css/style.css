@@ -9,6 +9,7 @@
 
   /* Light Theme Palette */
   --bg: #ffffff;
+  --bg-blur: rgba(255, 255, 255, 0.85);
   --bg-secondary: #f6f8fa;
   --bg-hover: #eaeef2;
   --text: #111111;
@@ -43,6 +44,7 @@
 .theme-dark {
   /* Dark Theme Palette */
   --bg: #121316;
+  --bg-blur: rgba(18, 19, 22, 0.85);
   --bg-secondary: #1a1c23;
   --bg-hover: #252830;
   --text: #e6e8ec;
@@ -78,6 +80,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not(.theme-light) {
     --bg: #121316;
+    --bg-blur: rgba(18, 19, 22, 0.85);
     --bg-secondary: #1a1c23;
     --bg-hover: #252830;
     --text: #e6e8ec;
@@ -117,6 +120,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-padding-top: 5.5rem;
+}
+
 html,
 body {
   margin: 0;
@@ -137,7 +144,7 @@ body {
 .site-wrapper {
   max-width: 50rem;
   margin: 0 auto;
-  padding: 1.75rem 1rem 3rem;
+  padding: 0 1rem 3rem;
   /* Compact page padding */
   min-height: 100vh;
   display: flex;
@@ -344,11 +351,18 @@ video {
 
 /* Navigation Header (Szymon Kaliski Layout - Compact) */
 header.site-header {
-  margin-bottom: 1.75rem;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--bg-blur);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(12px) saturate(180%);
+  padding-top: calc(1.75rem + env(safe-area-inset-top, 0px));
   padding-bottom: 0.85rem;
+  margin-bottom: 1.75rem;
   border-bottom: 1px solid var(--border);
-  position: relative;
-  z-index: 10;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .header-top {
@@ -494,6 +508,72 @@ nav.main-nav a.active {
   color: var(--text);
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+
+/* Sticky Page Title Bar (Reveals smoothly when scrolled past main h1) */
+.sticky-page-title-bar {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  padding-top: 0;
+  overflow: hidden;
+  transform: translateY(-4px);
+  transition: max-height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              margin-top 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              padding-top 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.sticky-page-title-bar.is-visible {
+  max-height: 2.2rem;
+  opacity: 1;
+  margin-top: 0.5rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--border);
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.sticky-page-title-inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  cursor: pointer;
+  max-width: 100%;
+  user-select: none;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.sticky-page-title-text {
+  font-size: 0.94rem;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: -0.015em;
+  text-transform: lowercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+  transition: color 0.15s ease;
+  min-width: 0;
+}
+
+.sticky-page-title-inner:hover .sticky-page-title-text {
+  color: var(--link-hover);
+}
+
+.sticky-page-title-date {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: normal;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .nav-actions {
