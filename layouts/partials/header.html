@@ -4,11 +4,16 @@
       <a href="{{ "" | relURL }}">
         <span class="site-title-name">{{ .Site.Title }}</span>
         {{ if .Site.Params.chinese_name }}
-          <span class="chinese-name-wrapper">
-            <span class="chinese-name" lang="zh-Hans">{{ .Site.Params.chinese_name }}</span>
-            {{ if .Site.Params.chinese_name_pinyin }}
-              <span class="chinese-tooltip" role="tooltip">{{ .Site.Params.chinese_name_pinyin }}</span>
-            {{ end }}
+          <span class="chinese-name-wrapper" id="chinese-name-toggle" role="button" tabindex="0" aria-label="Chinese name: {{ .Site.Params.chinese_name }}{{ if .Site.Params.chinese_name_pinyin }} ({{ .Site.Params.chinese_name_pinyin }}){{ end }}. Click to toggle pinyin." title="Click to show Pinyin">
+            <ruby class="chinese-ruby" lang="zh-Hans">
+              {{ if .Site.Params.chinese_name_ruby }}
+                {{ range .Site.Params.chinese_name_ruby }}
+                  <span class="chinese-char-pair"><span class="chinese-hanzi">{{ .char }}</span><rt class="chinese-rt">{{ .pinyin }}</rt></span>
+                {{ end }}
+              {{ else }}
+                <span class="chinese-char-pair"><span class="chinese-hanzi">{{ .Site.Params.chinese_name }}</span>{{ if .Site.Params.chinese_name_pinyin }}<rt class="chinese-rt">{{ .Site.Params.chinese_name_pinyin }}</rt>{{ end }}</span>
+              {{ end }}
+            </ruby>
           </span>
         {{ end }}
       </a>

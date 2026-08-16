@@ -614,36 +614,51 @@
   }
 
   // ==========================================
-  // 8. Chinese Name Tooltip (Touch / Tap to Peek)
+  // 8. Chinese Name Ruby Transliteration (Click / Tap to Reveal for 5s)
   // ==========================================
-  function initChineseNameTooltip() {
+  function initChineseNameRuby() {
     const wrap = document.querySelector('.chinese-name-wrapper');
     if (!wrap) return;
 
-    let hideTimer = null;
+    let timer = null;
 
-    wrap.addEventListener('click', (e) => {
-      // Prevent parent <a> tag navigation when tapping specifically on the Chinese name
+    function hidePinyin() {
+      wrap.classList.remove('is-pinyin-active');
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    }
+
+    function showPinyin() {
+      wrap.classList.add('is-pinyin-active');
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(hidePinyin, 5000);
+    }
+
+    function togglePinyin(e) {
+      // Prevent parent <a> tag navigation when tapping/clicking specifically on Chinese characters
       e.preventDefault();
       e.stopPropagation();
 
-      const isVisible = wrap.classList.contains('is-visible');
-      if (isVisible) {
-        wrap.classList.remove('is-visible');
-        if (hideTimer) clearTimeout(hideTimer);
+      if (wrap.classList.contains('is-pinyin-active')) {
+        hidePinyin();
       } else {
-        wrap.classList.add('is-visible');
-        if (hideTimer) clearTimeout(hideTimer);
-        hideTimer = setTimeout(() => {
-          wrap.classList.remove('is-visible');
-        }, 2500);
+        showPinyin();
+      }
+    }
+
+    wrap.addEventListener('click', togglePinyin);
+
+    wrap.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        togglePinyin(e);
       }
     });
 
     document.addEventListener('click', (e) => {
       if (!wrap.contains(e.target)) {
-        wrap.classList.remove('is-visible');
-        if (hideTimer) clearTimeout(hideTimer);
+        hidePinyin();
       }
     });
   }
@@ -745,7 +760,7 @@
     initMarginLayout();
     initFigBars();
     initImageZoom();
-    initChineseNameTooltip();
+    initChineseNameRuby();
     initChineseStrokeAnimation();
   });
 })();
