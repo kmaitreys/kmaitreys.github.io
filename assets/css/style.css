@@ -387,17 +387,20 @@ header.site-header {
   position: relative;
   display: inline-flex;
   align-items: baseline;
-  background: transparent;
-  border: none;
-  padding: 0 1px;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none;
+  box-shadow: none !important;
+  padding: 0;
   margin: 0;
   font: inherit;
   color: inherit;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
   vertical-align: baseline;
-  border-radius: 4px;
 }
 
 .chinese-name-wrapper:focus-visible {

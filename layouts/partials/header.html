@@ -5,7 +5,7 @@
         <span class="site-title-name">{{ .Site.Title }}</span>
       </a>
       {{ if .Site.Params.chinese_name }}
-        <button type="button" class="chinese-name-wrapper" id="chinese-name-toggle" aria-label="Chinese name: {{ .Site.Params.chinese_name }}{{ if .Site.Params.chinese_name_pinyin }} ({{ .Site.Params.chinese_name_pinyin }}){{ end }}. Click to toggle pinyin." title="Click to show Pinyin">
+        <span class="chinese-name-wrapper" id="chinese-name-toggle" role="button" tabindex="0" aria-label="Chinese name: {{ .Site.Params.chinese_name }}{{ if .Site.Params.chinese_name_pinyin }} ({{ .Site.Params.chinese_name_pinyin }}){{ end }}. Click to toggle pinyin." title="Click to show Pinyin">
           <ruby class="chinese-ruby" lang="zh-Hans">
             {{ if .Site.Params.chinese_name_ruby }}
               {{ range .Site.Params.chinese_name_ruby }}
@@ -15,7 +15,7 @@
               <span class="chinese-char-pair"><span class="chinese-hanzi">{{ .Site.Params.chinese_name }}</span>{{ if .Site.Params.chinese_name_pinyin }}<rt class="chinese-rt">{{ .Site.Params.chinese_name_pinyin }}</rt>{{ end }}</span>
             {{ end }}
           </ruby>
-        </button>
+        </span>
       {{ end }}
     </div>
 
