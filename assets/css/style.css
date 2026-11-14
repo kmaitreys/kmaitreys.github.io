@@ -113,6 +113,65 @@
   }
 }
 
+/* The disk occupies spare header space without contributing any height. */
+.disk-kinematics {
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+  isolation: isolate;
+  transition: opacity 140ms linear;
+}
+
+.disk-discovery {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.disk-discovery:focus-visible {
+  outline: 1px solid var(--text-muted);
+  outline-offset: -3px;
+}
+
+.disk-scene {
+  position: absolute;
+  width: max(246px, 114%);
+  aspect-ratio: 720 / 430;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.disk-scene canvas {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+.disk-texture { mix-blend-mode: overlay; }
+
+@media (prefers-reduced-motion: reduce) {
+  .disk-kinematics { transition: none; }
+}
+
+.disk-discovery-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* Global Reset & Base Setup */
 *,
 *::before,

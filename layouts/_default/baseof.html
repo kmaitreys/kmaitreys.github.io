@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.LanguageCode | default "en-us" }}">
+<html lang="{{ .Site.Language.Locale | default "en-us" }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -52,5 +52,7 @@
 
   {{ $mainJs := resources.Get "js/main.js" }}
   <script src="{{ $mainJs.RelPermalink }}" defer></script>
+  {{ $navigationJs := resources.Get "js/navigation.js" }}
+  <script src="{{ $navigationJs.RelPermalink }}" defer></script>
 </body>
 </html>

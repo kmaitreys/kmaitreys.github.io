@@ -1,0 +1,11 @@
+<div class="disk-kinematics" id="disk-kinematics" hidden>
+  <button type="button" class="disk-discovery" aria-label="Explore the disk: find the hidden planet" aria-pressed="false">
+    <div class="disk-scene" aria-hidden="true">
+      <canvas class="disk-field" width="1440" height="860"></canvas>
+      <canvas class="disk-texture" width="720" height="430"></canvas>
+    </div>
+  </button>
+  <span class="disk-discovery-status" role="status"></span>
+</div>
+{{ $diskJs := resources.Get "js/disk-kinematics.js" }}
+<script src="{{ $diskJs.RelPermalink }}" defer></script>

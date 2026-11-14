@@ -427,9 +427,6 @@
   // 7. Image Lightbox / Zoom Modal with Scroll & Pan Zoom
   // ==========================================
   function initImageZoom() {
-    const postContent = document.querySelector('.post-content');
-    if (!postContent) return;
-
     let overlay = document.querySelector('.image-zoom-overlay');
     if (!overlay) {
       overlay = document.createElement('div');
@@ -600,8 +597,8 @@
       }
     });
 
-    postContent.addEventListener('click', (e) => {
-      const img = e.target.closest('img');
+    document.addEventListener('click', (e) => {
+      const img = e.target.closest('.post-content img');
       if (!img) return;
       if (img.closest('.no-zoom') || img.classList.contains('no-zoom')) return;
 
@@ -666,7 +663,7 @@
   // ==========================================
   // 9. Synchronized Chinese Name Stroke Order Animation
   // ==========================================
-  function initChineseStrokeAnimation() {
+  function initChineseStrokeAnimation(signal) {
     const container = document.getElementById('chinese-name-strokes');
     if (!container) return;
 
@@ -676,6 +673,7 @@
 
     let isLooping = false;
     let animTimeout = null;
+    let observer = null;
     const ANIMATION_DURATION = 6800; // 7 strokes: (6 * 1000ms) + 800ms
     const LOOP_PAUSE = 2200; // Pause at completion before looping
 
@@ -728,7 +726,7 @@
     }
 
     if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
+      observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             triggerAutoStart();
@@ -748,13 +746,14 @@
       if (rect.top < window.innerHeight && rect.bottom > 0) {
         triggerAutoStart();
       }
-    }, { passive: true, once: true });
+    }, { passive: true, once: true, signal });
+    return () => { clearTimeout(animTimeout); if (observer) observer.disconnect(); };
   }
 
   // ==========================================
   // 10. Sticky Page / Post Title on Scroll
   // ==========================================
-  function initStickyPageTitle() {
+  function initStickyPageTitle(signal) {
     const stickyBar = document.getElementById('sticky-page-title-bar');
     if (!stickyBar) return;
 
@@ -781,8 +780,9 @@
       }
     }
 
+    let observer = null;
     if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
+      observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (!entry.isIntersecting && entry.boundingClientRect.top < 120) {
             stickyBar.classList.add('is-visible');
@@ -801,22 +801,50 @@
     }
 
     // Scroll listener ensures immediate responsiveness on rapid scrolling / touch inertia
-    window.addEventListener('scroll', checkPosition, { passive: true });
+    window.addEventListener('scroll', checkPosition, { passive: true, signal });
     checkPosition();
+    return () => { if (observer) observer.disconnect(); };
   }
 
-  // Initialize all features on DOM ready
+  let disposePage = () => {};
+  function initPage() {
+    disposePage();
+    const scope = new AbortController();
+    const cleanup = [];
+    initEmailObfuscation();
+    initFootnotes();
+    initFigBars();
+    adjustMarginElements();
+    cleanup.push(initChineseStrokeAnimation(scope.signal));
+    cleanup.push(initStickyPageTitle(scope.signal));
+    const main = document.querySelector('main');
+    if (window.renderMathInElement) {
+      window.renderMathInElement(main, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false },
+          { left: '\\(', right: '\\)', display: false },
+          { left: '\\[', right: '\\]', display: true }
+        ], throwOnError: false
+      });
+    }
+    // Loaded media can change the positions of margin notes after insertion.
+    main.addEventListener('load', adjustMarginElements, { capture: true, signal: scope.signal });
+    disposePage = () => {
+      scope.abort();
+      cleanup.forEach(fn => { if (fn) fn(); });
+    };
+  }
+
+  document.addEventListener('site:before-navigation', () => disposePage());
+  document.addEventListener('site:page-ready', initPage);
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initSearch();
-    initEmailObfuscation();
-    initFootnotes();
     initMarginLayout();
-    initFigBars();
     initImageZoom();
     initChineseNameRuby();
-    initChineseStrokeAnimation();
-    initStickyPageTitle();
+    initPage();
   });
 })();
 
