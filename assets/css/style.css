@@ -140,7 +140,9 @@
 
 .disk-scene {
   position: absolute;
-  width: max(246px, 114%);
+  /* Keep the emitting ellipse inside the available horizontal space instead
+     of slicing it off at the portrait container's vertical sides. */
+  width: min(144%, var(--disk-scene-width, max(246px, 114%)));
   aspect-ratio: 720 / 430;
   left: 50%;
   top: 50%;

@@ -21,11 +21,13 @@
   const random = () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; };
   const N = 128, noise = new Float32Array(N * N);
   for (let i = 0; i < noise.length; i++) noise[i] = random();
-  function sample(x, y) {
+  function sample(x, y, period = N) {
     const ix = Math.floor(x), iy = Math.floor(y);
     let fx = x - ix, fy = y - iy;
-    fx *= fx * (3 - 2 * fx); fy *= fy * (3 - 2 * fy);
-    const x0 = ix & 127, x1 = (ix + 1) & 127;
+    // Quintic interpolation keeps both slope and curvature continuous at cells.
+    fx = fx * fx * fx * (fx * (fx * 6 - 15) + 10);
+    fy = fy * fy * fy * (fy * (fy * 6 - 15) + 10);
+    const x0 = ix & (period - 1), x1 = (ix + 1) & (period - 1);
     const y0 = (iy & 127) * N, y1 = ((iy + 1) & 127) * N;
     return (noise[y0 + x0] * (1 - fx) + noise[y0 + x1] * fx) * (1 - fy)
       + (noise[y1 + x0] * (1 - fx) + noise[y1 + x1] * fx) * fy;
@@ -53,8 +55,8 @@
       const p = geometry(x + 0.5, y + 0.5);
       if (!p) continue;
       pixels.push({ i: (y * W + x) * 4, mask: p.mask,
-        u: p.phi * 96 / (Math.PI * 2), v: p.r * 36,
-        band: Math.min(127, Math.floor(p.r * 120)) });
+        u: p.phi * 64 / (Math.PI * 2), v: p.r * 30,
+        speed: 0.075 / Math.pow(Math.max(p.r, 0.27), 1.5) * 64 / (Math.PI * 2) });
     }
   }
 
@@ -77,7 +79,6 @@
     });
   }
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const shifts = new Float32Array(128);
   const sessionKey = 'disk-kinematics-v1';
   let epoch = Date.now(), found = false;
   try {
@@ -116,21 +117,37 @@
     }
   }
 
-  // Position the art between the actual link bounds and the action controls.
-  // On cramped headers it disappears rather than moving or covering controls.
+  // Use the full-height gap on desktop, then the first-row gap on phones.
+  // At especially narrow widths, the existing top padding is a safe fallback.
   function layout() {
     const bounds = header.getBoundingClientRect();
     const title = header.querySelector('.site-title').getBoundingClientRect();
     const links = header.querySelectorAll('.main-nav a');
     const navEnd = links[links.length - 1].getBoundingClientRect().right;
     const actions = header.querySelector('.nav-actions').getBoundingClientRect();
-    const left = Math.max(title.right, navEnd) - bounds.left + 14;
+    const nav = header.querySelector('.main-nav').getBoundingClientRect();
+    let left = Math.max(title.right, navEnd) - bounds.left + 14;
     const right = actions.left - bounds.left - 14;
-    root.hidden = right - left < 72;
+    let width = right - left, top = 0, height = nav.bottom - bounds.top + 10;
+    let sceneWidth = 'max(246px, 114%)';
+    if (width < 72) {
+      left = title.right - bounds.left + 6;
+      width = actions.left - bounds.left - 6 - left;
+      height = nav.top - bounds.top - 4;
+      sceneWidth = `${Math.min(160, Math.max(86, width * 1.14))}px`;
+      if (width < 36) {
+        width = Math.min(130, bounds.width * 0.42);
+        left = (bounds.width - width) / 2;
+        height = Math.max(16, title.top - bounds.top - 5);
+        sceneWidth = '86px';
+      }
+    }
+    root.hidden = false;
     root.style.left = `${left}px`;
-    root.style.width = `${Math.max(0, right - left)}px`;
-    // Keep the crop independent of the extra sticky article-title row.
-    root.style.height = `${header.querySelector('.main-nav').getBoundingClientRect().bottom - bounds.top + 10}px`;
+    root.style.top = `${top}px`;
+    root.style.width = `${width}px`;
+    root.style.height = `${height}px`;
+    root.style.setProperty('--disk-scene-width', sceneWidth);
     synchronize();
   }
 
@@ -193,17 +210,23 @@
   function draw() {
     const data = frame.data;
     const elapsed = reducedMotion.matches ? 0 : (Date.now() - epoch) / 1000;
-    for (let b = 0; b < shifts.length; b++) {
-      const radius = Math.max((b + 0.5) / 120, 0.27);
-      shifts[b] = elapsed * 0.075 / Math.pow(radius, 1.5) * 96 / (Math.PI * 2);
-    }
+    // Crossfade two bounded-age flows. This keeps differential shear from
+    // winding the texture into subpixel rings after a long browsing session.
+    // Each flow has zero weight when its local clock wraps, so no reset shows.
+    const age = elapsed % 16, otherAge = (age + 8) % 16;
+    const weight = Math.sin(Math.PI * age / 16) ** 2;
     for (const p of pixels) {
-      const u = p.u - shifts[p.band];
-      const advected = 0.7 * sample(u, p.v) + 0.3 * sample(u * 2, p.v * 2) - 0.5;
+      // The angular span equals the noise period at each octave, so the two
+      // sides of atan2's branch cut join exactly at every animation phase.
+      // Continuous radius-dependent speeds avoid visible annular band edges.
+      const u = p.u - age * p.speed, otherU = p.u - otherAge * p.speed;
+      const first = 0.85 * sample(u, p.v, 64) + 0.15 * sample(u * 2, p.v * 2, 128);
+      const second = 0.85 * sample(otherU, p.v, 64) + 0.15 * sample(otherU * 2, p.v * 2, 128);
+      const advected = weight * first + (1 - weight) * second - 0.5;
       // Visible structure at the actual header size, rather than subpixel
       // grain that disappears on downsampling. A neutral texture preserves
       // the stationary red/blue velocity pattern beneath it.
-      const intensity = Math.round(128 + advected * 190);
+      const intensity = Math.round(128 + advected * 160);
       const i = p.i;
       data[i] = intensity; data[i + 1] = intensity; data[i + 2] = intensity;
       data[i + 3] = Math.round(p.mask * 255);
