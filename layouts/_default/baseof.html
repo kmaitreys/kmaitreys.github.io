@@ -42,8 +42,9 @@
   <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="/index.xml">
 </head>
 <body>
+  {{ if .IsHome }}{{ partial "disk-kinematics.html" . }}{{ end }}
+  {{ partial "header.html" . }}
   <div class="site-wrapper">
-    {{ partial "header.html" . }}
     <main>
       {{ block "main" . }}{{ end }}
     </main>

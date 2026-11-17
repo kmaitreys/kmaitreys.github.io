@@ -58,7 +58,7 @@
       const oldBar = document.getElementById('sticky-page-title-bar');
       const nextBar = next.getElementById('sticky-page-title-bar');
       if (oldBar) oldBar.remove();
-      if (nextBar) document.querySelector('header.site-header').append(nextBar);
+      if (nextBar) document.querySelector('.header-inner').append(nextBar);
       document.title = next.title;
       const description = document.querySelector('meta[name="description"]');
       const nextDescription = next.querySelector('meta[name="description"]');

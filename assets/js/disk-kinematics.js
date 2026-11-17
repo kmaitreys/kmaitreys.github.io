@@ -1,288 +1,227 @@
-/* Synthetic projected Keplerian field plus a small illustrative LOS perturbation.
- * The sharp velocity field remains stationary; a separate, clearly visible
- * advected texture supplies artistic motion at the displayed header scale. */
+/* Isovelocity contours of a flared Keplerian disk, drawn in the page's text
+ * colour. On wide screens the disk sits in the right margin and runs off the
+ * page edge; on narrower screens it sits behind the header navigation.
+ * A bright channel sweeps from the blue-shifted wing to the red-shifted wing
+ * and back, like scrubbing through a line cube.
+ *
+ * Geometry: on an emission surface z(r) = z0 r^psi the line-of-sight velocity
+ * is v ∝ r^-1/2 sin(i) cos(phi), so the contour of channel u is
+ * phi(r) = ±acos(u sqrt(r)).
+ */
 (() => {
   'use strict';
-  const root = document.getElementById('disk-kinematics');
-  if (!root) return;
-  const canvas = root.querySelector('.disk-texture');
-  const fieldCanvas = root.querySelector('.disk-field');
-  const ctx = canvas.getContext('2d');
-  const fieldCtx = fieldCanvas.getContext('2d');
-  if (!ctx || !fieldCtx) return;
-  const W = canvas.width, H = canvas.height;
-  const frame = ctx.createImageData(W, H);
-  const fieldFrame = fieldCtx.createImageData(fieldCanvas.width, fieldCanvas.height);
-  const pixels = [];
-  const clamp = (x, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, x));
-  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
-  const gauss = x => Math.exp(-x * x / 2);
-  let seed = 6217;
-  const random = () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; };
-  const N = 128, noise = new Float32Array(N * N);
-  for (let i = 0; i < noise.length; i++) noise[i] = random();
-  function sample(x, y, period = N) {
-    const ix = Math.floor(x), iy = Math.floor(y);
-    let fx = x - ix, fy = y - iy;
-    // Quintic interpolation keeps both slope and curvature continuous at cells.
-    fx = fx * fx * fx * (fx * (fx * 6 - 15) + 10);
-    fy = fy * fy * fy * (fy * (fy * 6 - 15) + 10);
-    const x0 = ix & (period - 1), x1 = (ix + 1) & (period - 1);
-    const y0 = (iy & 127) * N, y1 = ((iy + 1) & 127) * N;
-    return (noise[y0 + x0] * (1 - fx) + noise[y0 + x1] * fx) * (1 - fy)
-      + (noise[y1 + x0] * (1 - fx) + noise[y1 + x1] * fx) * fy;
-  }
-  const angle = -0.43, ca = Math.cos(angle), sa = Math.sin(angle);
-  const cosInclination = 0.68;
-  const sinInclination = Math.sqrt(1 - cosInclination ** 2);
-  const keplerianSpeedAtOuterRadius = 2.4;
-  const velocityLimit = 4.0, residualLimit = 0.20;
-  const flipR = 0.44, flipPhi = -1.7;
-
-  function geometry(x, y) {
-    const sx = (x - W * 0.51) / 248, sy = (y - H * 0.50) / 248;
-    const dx = sx * ca + sy * sa, dy = (-sx * sa + sy * ca) / cosInclination;
-    const r = Math.hypot(dx, dy), phi = Math.atan2(dy, dx);
-    if (r > 1.025 || r < 0.195) return null;
-    const grain = sample(dx * 57 + 21, dy * 57 + 37) - 0.5;
-    // A defined, slightly irregular aperture with a narrow antialiased rim.
-    const edge = 1 + 0.003 * Math.sin(phi * 13) + grain * 0.008;
-    const mask = smooth(0.196, 0.203, r) * (1 - smooth(edge - 0.003, edge + 0.003, r));
-    return mask > 0.001 ? { r, phi, dx, dy, grain, mask } : null;
-  }
-  for (let y = 0; y < H; y++) {
-    for (let x = 0; x < W; x++) {
-      const p = geometry(x + 0.5, y + 0.5);
-      if (!p) continue;
-      pixels.push({ i: (y * W + x) * 4, mask: p.mask,
-        u: p.phi * 64 / (Math.PI * 2), v: p.r * 30,
-        speed: 0.075 / Math.pow(Math.max(p.r, 0.27), 1.5) * 64 / (Math.PI * 2) });
-    }
-  }
-
-  const systemDark = matchMedia('(prefers-color-scheme: dark)');
-  function darkTheme() {
-    const classes = document.documentElement.classList;
-    return classes.contains('theme-dark') || (!classes.contains('theme-light') && systemDark.matches);
-  }
-  function makePalette() {
-    // Keep blue negative and red positive in both themes. The dark neutral
-    // is quieter, while the colored lobes retain strong chroma and contrast.
-    const colors = darkTheme()
-      ? [[29, 76, 155], [22, 111, 199], [57, 159, 226], [118, 187, 216],
-        [190, 199, 202], [229, 165, 142], [242, 98, 68], [220, 43, 44], [157, 18, 49]]
-      : [[6, 42, 94], [7, 98, 177], [31, 154, 220], [143, 203, 226],
-        [250, 247, 236], [252, 183, 152], [242, 88, 55], [207, 27, 41], [114, 0, 35]];
-    return Array.from({ length: 2049 }, (_, i) => {
-      const t = i / 256, j = Math.min(7, Math.floor(t)), f = t - j;
-      return colors[j].map((c, k) => Math.round(c * (1 - f) + colors[j + 1][k] * f));
-    });
-  }
+  const bleed = document.getElementById('disk-bleed');
+  const band = document.getElementById('disk-band');
+  if (!bleed && !band) return;
+  const html = document.documentElement;
+  const wide = matchMedia('(min-width: 1200px)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const sessionKey = 'disk-kinematics-v1';
-  let epoch = Date.now(), found = false;
-  try {
-    const saved = JSON.parse(sessionStorage.getItem(sessionKey));
-    if (saved && Number.isFinite(saved.epoch) && saved.epoch <= epoch) {
-      epoch = saved.epoch;
-      found = saved.found === true;
+  const systemDark = matchMedia('(prefers-color-scheme: dark)');
+  const TAU = Math.PI * 2;
+  const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+  const gauss = x => Math.exp(-x * x / 2);
+
+  /* ---------- disk model (lengths in units of the outer radius) ---------- */
+  const R_IN = 0.13, PSI = 1.25;
+  const CHANNELS = 24, DU = 0.115;
+  const STILL_CHANNEL = 7; // the channel shown bright when motion is reduced
+
+  /* ---------- look: tune these ---------- */
+  const LOOK = {
+    inclination: 72,      // degrees; higher is more edge-on
+    positionAngle: -0.16, // radians; tilt of the major axis
+    flaring: 0.2,         // emission-surface height z0 (z = z0 r^1.25)
+    // Wide screens. "Margin" is the empty space right of the text column.
+    size: 1.1,            // disk radius as a fraction of the margin width
+    centreX: 0.7,         // centre, as a fraction across the margin
+    centreY: 0.24,        // centre, as a fraction of the drawing's height
+    // Contours and the scanning channel.
+    lineAlpha: 0.24,      // resting opacity of the near-surface contours
+    glow: 0.3,            // extra opacity of the scanning channel
+    sweepSeconds: 24,     // one blue -> red -> blue scan
+  };
+
+  function geometry(incDeg, pa, z0) {
+    const inc = incDeg * Math.PI / 180;
+    return { cos: Math.cos(inc), sin: Math.sin(inc), cp: Math.cos(pa), sp: Math.sin(pa), z0 };
+  }
+  // side: +1 for the near (front) emission surface, -1 for the far (back) one.
+  function project(g, r, phi, side) {
+    const x = r * Math.cos(phi);
+    const y = r * Math.sin(phi) * g.cos - side * g.z0 * Math.pow(r, PSI) * g.sin;
+    return [x * g.cp - y * g.sp, x * g.sp + y * g.cp];
+  }
+  // Polylines for the contour of channel u: a closed lobe, or two open arms.
+  function contour(g, u, side, n = 144) {
+    const rEnd = u === 0 ? 1 : Math.min(1, 1 / (u * u));
+    if (rEnd <= R_IN) return [];
+    const branch = sign => {
+      const pts = [];
+      for (let j = 0; j <= n; j++) {
+        const s = j / n;
+        const r = R_IN + (rEnd - R_IN) * (1 - (1 - s) * (1 - s)); // denser towards the tip
+        const phi = sign * Math.acos(clamp(u * Math.sqrt(r), -1, 1));
+        pts.push(project(g, r, phi, side));
+      }
+      return pts;
+    };
+    const a = branch(1), b = branch(-1);
+    return rEnd < 1 ? [a.concat(b.reverse())] : [a, b];
+  }
+  function ring(g, r, side, n = 120) {
+    const pts = [];
+    for (let j = 0; j <= n; j++) pts.push(project(g, r, TAU * j / n, side));
+    return pts;
+  }
+  // Scale and centre that fit the whole disk inside a W x H box.
+  function fitDisk(g, W, H, pad) {
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    for (const side of [1, -1]) for (const p of ring(g, 1, side)) {
+      x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]);
     }
-  } catch { /* The graphic also works when browser storage is unavailable. */ }
-  function saveState() {
-    try { sessionStorage.setItem(sessionKey, JSON.stringify({ epoch, found })); } catch { /* Optional persistence. */ }
-  }
-  saveState();
-  let visible = true, faded = false;
-  let lastDraw = -Infinity, request = null;
-  const discovery = root.querySelector('.disk-discovery');
-  const status = root.querySelector('.disk-discovery-status');
-  const header = root.closest('header');
-
-  function updateDiscovery() {
-    discovery.setAttribute('aria-pressed', String(found));
-    discovery.setAttribute('aria-label', found
-      ? 'Planet found. Return to the velocity field'
-      : 'Explore the disk: find the hidden planet');
+    const a = Math.min((W - 2 * pad) / (x1 - x0), (H - 2 * pad) / (y1 - y0));
+    return { a, cx: W / 2 - a * (x0 + x1) / 2, cy: H / 2 - a * (y0 + y1) / 2 };
   }
 
-  function updateScroll() {
-    const fade = smooth(12, 160, window.scrollY);
-    root.style.opacity = String(1 - fade);
-    root.inert = fade >= 0.99;
-    const nextFaded = fade >= 0.99;
-    if (nextFaded !== faded) {
-      faded = nextFaded;
-      if (!faded) draw();
-      synchronize();
+  /* ---------- drawing helpers ---------- */
+  function palette() {
+    const css = getComputedStyle(html);
+    const get = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
+    return { ink: get('--text', '#111') };
+  }
+  function toPath(lines, cx, cy, a) {
+    const path = new Path2D();
+    for (const pts of lines) {
+      pts.forEach((p, i) => (i ? path.lineTo(cx + a * p[0], cy + a * p[1]) : path.moveTo(cx + a * p[0], cy + a * p[1])));
     }
+    return path;
   }
+  /* ---------- one drawing in one mount ---------- */
+  function create(mount, big) {
+    const g = big
+      ? geometry(LOOK.inclination, LOOK.positionAngle, LOOK.flaring)
+      : geometry(Math.max(76, LOOK.inclination), -0.05, 0.13);
+    const canvas = document.createElement('canvas');
+    canvas.setAttribute('aria-hidden', 'true');
+    mount.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    let W = 0, H = 0, a = 1, cx = 0, cy = 0, edge = 0, colors, items = [];
+    let lastDraw = -Infinity, request = null, visible = true;
+    const start = performance.now();
 
-  // Use the full-height gap on desktop, then the first-row gap on phones.
-  // At especially narrow widths, the existing top padding is a safe fallback.
-  function layout() {
-    const bounds = header.getBoundingClientRect();
-    const title = header.querySelector('.site-title').getBoundingClientRect();
-    const links = header.querySelectorAll('.main-nav a');
-    const navEnd = links[links.length - 1].getBoundingClientRect().right;
-    const actions = header.querySelector('.nav-actions').getBoundingClientRect();
-    const nav = header.querySelector('.main-nav').getBoundingClientRect();
-    let left = Math.max(title.right, navEnd) - bounds.left + 14;
-    const right = actions.left - bounds.left - 14;
-    let width = right - left, top = 0, height = nav.bottom - bounds.top + 10;
-    let sceneWidth = 'max(246px, 114%)';
-    if (width < 72) {
-      left = title.right - bounds.left + 6;
-      width = actions.left - bounds.left - 6 - left;
-      height = nav.top - bounds.top - 4;
-      sceneWidth = `${Math.min(160, Math.max(86, width * 1.14))}px`;
-      if (width < 36) {
-        width = Math.min(130, bounds.width * 0.42);
-        left = (bounds.width - width) / 2;
-        height = Math.max(16, title.top - bounds.top - 5);
-        sceneWidth = '86px';
+    function build() {
+      const rect = mount.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = rect.width; H = rect.height;
+      canvas.width = Math.max(1, Math.round(W * dpr));
+      canvas.height = Math.max(1, Math.round(H * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      colors = palette();
+      if (big) {
+        // Centre the disk in the empty margin right of the text column; it runs off the page edge.
+        edge = document.querySelector('.site-wrapper').getBoundingClientRect().right;
+        const margin = W - edge;
+        a = Math.max(W * 0.36, margin * LOOK.size);
+        cx = edge + Math.max(W * 0.1, margin * LOOK.centreX);
+        cy = H * LOOK.centreY;
+      } else {
+        ({ a, cx, cy } = fitDisk(g, W, H, 2));
+      }
+      items = [];
+      for (let k = -CHANNELS; k <= CHANNELS; k++) {
+        items.push({
+          k,
+          front: toPath(contour(g, k * DU, 1), cx, cy, a),
+          back: toPath(contour(g, k * DU, -1), cx, cy, a),
+        });
+      }
+      lastDraw = -Infinity;
+      wake();
+    }
+
+    function draw(now) {
+      const t = (now - start) / 1000;
+      const centre = reducedMotion.matches
+        ? STILL_CHANNEL
+        : (CHANNELS + 3) * Math.sin(TAU * t / LOOK.sweepSeconds - 0.5);
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = colors.ink;
+      for (const item of items) {
+        const glow = gauss((item.k - centre) / 1.5);
+        ctx.lineWidth = 0.8;
+        ctx.globalAlpha = 0.3 * LOOK.lineAlpha + 0.3 * LOOK.glow * glow;
+        ctx.stroke(item.back);
+        ctx.lineWidth = 0.9 + 0.6 * LOOK.glow * glow;
+        ctx.globalAlpha = LOOK.lineAlpha + LOOK.glow * glow;
+        ctx.stroke(item.front);
+      }
+      ctx.globalAlpha = 1;
+      if (big) {
+        // A faint watermark behind the text column, dissolving towards the bottom.
+        ctx.globalCompositeOperation = 'destination-in';
+        const across = ctx.createLinearGradient(0, 0, W, 0);
+        const stop = x => clamp(x / W, 0, 1);
+        [[-480, 0], [-220, 0.06], [-40, 0.18], [80, 0.6], [220, 1]].forEach(([dx, alpha]) => {
+          across.addColorStop(stop(edge + dx), `rgba(0,0,0,${alpha})`);
+        });
+        ctx.fillStyle = across; ctx.fillRect(0, 0, W, H);
+        const down = ctx.createLinearGradient(0, 0, 0, H);
+        down.addColorStop(0.7, 'rgba(0,0,0,1)'); down.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = down; ctx.fillRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'source-over';
       }
     }
-    root.hidden = false;
-    root.style.left = `${left}px`;
-    root.style.top = `${top}px`;
-    root.style.width = `${width}px`;
-    root.style.height = `${height}px`;
-    root.style.setProperty('--disk-scene-width', sceneWidth);
-    synchronize();
+
+    // Animate at up to ~30 fps while on screen; draw once and stop when motion is reduced.
+    const running = () => visible && !document.hidden && !reducedMotion.matches;
+    function frame(now) {
+      request = null;
+      if (now - lastDraw >= 33) { draw(now); lastDraw = now; }
+      if (running()) request = requestAnimationFrame(frame);
+    }
+    function wake() { if (request === null) request = requestAnimationFrame(frame); }
+    const observer = 'IntersectionObserver' in window
+      ? new IntersectionObserver(entries => { visible = entries[0].isIntersecting; wake(); })
+      : null;
+    if (observer) observer.observe(mount);
+    document.addEventListener('visibilitychange', wake);
+    reducedMotion.addEventListener('change', wake);
+    build();
+
+    return {
+      build,
+      destroy() {
+        if (request !== null) cancelAnimationFrame(request);
+        if (observer) observer.disconnect();
+        document.removeEventListener('visibilitychange', wake);
+        reducedMotion.removeEventListener('change', wake);
+        mount.replaceChildren();
+      },
+    };
   }
 
-  // Project the perturbation's location with the same geometry as the map.
-  const planetX = flipR * Math.cos(flipPhi);
-  const planetY = flipR * Math.sin(flipPhi) * cosInclination;
-  const targetX = W * 0.51 + 248 * (planetX * ca - planetY * sa);
-  const targetY = H * 0.50 + 248 * (planetX * sa + planetY * ca);
-  discovery.addEventListener('click', event => {
-    if (found) {
-      found = false;
-      status.textContent = '';
-    } else {
-      const rect = canvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left) * W / rect.width;
-      const y = (event.clientY - rect.top) * H / rect.height;
-      // Keyboard activation supplies the equivalent discovery without requiring
-      // pointer coordinates; touch receives a usable target around the feature.
-      const tolerance = Math.max(34, 14 * W / rect.width);
-      if (event.detail !== 0 && Math.hypot(x - targetX, y - targetY) > tolerance) return;
-      found = true;
-      status.textContent = 'You found the hidden planet! Doppler residuals revealed.';
-    }
-    updateDiscovery();
-    saveState();
-    drawField();
-    draw();
+  /* ---------- mounting ---------- */
+  let active = null, mounted = null;
+  function apply() {
+    const mount = wide.matches && bleed ? bleed : band;
+    if (active && mount === mounted) { active.build(); return; }
+    if (active) active.destroy();
+    active = null;
+    mounted = mount;
+    if (mount && mount.getBoundingClientRect().width > 0) active = create(mount, mount === bleed);
+  }
+  let resizeTimer = null, lastWidth = window.innerWidth;
+  window.addEventListener('resize', () => {
+    if (window.innerWidth === lastWidth) return; // ignore mobile toolbar height changes
+    lastWidth = window.innerWidth;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(apply, 80);
   });
-  let fieldState = '';
-  function drawField() {
-    const state = `${found}:${darkTheme()}`;
-    if (state === fieldState) return;
-    fieldState = state;
-    const data = fieldFrame.data, palette = makePalette();
-    const scale = fieldCanvas.width / W;
-    data.fill(0);
-    for (let y = 0; y < fieldCanvas.height; y++) {
-      for (let x = 0; x < fieldCanvas.width; x++) {
-        const p = geometry((x + 0.5) / scale, (y + 0.5) / scale);
-        if (!p) continue;
-        const dp = Math.atan2(Math.sin(p.phi - flipPhi), Math.cos(p.phi - flipPhi));
-        const tangential = dp * flipR;
-        const bend = 0.028 * Math.tanh(tangential / 0.06);
-        const flip = 0.16 * (tangential / 0.052) * gauss(tangential / 0.066)
-          * gauss((p.r - flipR - bend) / 0.052);
-        const rotation = keplerianSpeedAtOuterRadius * sinInclination * Math.cos(p.phi) / Math.sqrt(p.r);
-        const perturbation = flip + p.grain * 0.014
-          + 0.012 * Math.cos(p.phi) * Math.sin(p.r * 34) * gauss((p.r - 0.65) / 0.28);
-        const velocity = rotation + perturbation;
-        const residual = velocity - rotation;
-        const value = found ? residual / residualLimit : velocity / velocityLimit;
-        const color = palette[Math.round((clamp(value, -1, 1) + 1) * 1024)];
-        const i = (y * fieldCanvas.width + x) * 4;
-        data[i] = color[0]; data[i + 1] = color[1]; data[i + 2] = color[2];
-        data[i + 3] = Math.round(p.mask * 255);
-      }
-    }
-    fieldCtx.putImageData(fieldFrame, 0, 0);
-  }
-  function draw() {
-    const data = frame.data;
-    const elapsed = reducedMotion.matches ? 0 : (Date.now() - epoch) / 1000;
-    // Crossfade two bounded-age flows. This keeps differential shear from
-    // winding the texture into subpixel rings after a long browsing session.
-    // Each flow has zero weight when its local clock wraps, so no reset shows.
-    const age = elapsed % 16, otherAge = (age + 8) % 16;
-    const weight = Math.sin(Math.PI * age / 16) ** 2;
-    for (const p of pixels) {
-      // The angular span equals the noise period at each octave, so the two
-      // sides of atan2's branch cut join exactly at every animation phase.
-      // Continuous radius-dependent speeds avoid visible annular band edges.
-      const u = p.u - age * p.speed, otherU = p.u - otherAge * p.speed;
-      const first = 0.85 * sample(u, p.v, 64) + 0.15 * sample(u * 2, p.v * 2, 128);
-      const second = 0.85 * sample(otherU, p.v, 64) + 0.15 * sample(otherU * 2, p.v * 2, 128);
-      const advected = weight * first + (1 - weight) * second - 0.5;
-      // Visible structure at the actual header size, rather than subpixel
-      // grain that disappears on downsampling. A neutral texture preserves
-      // the stationary red/blue velocity pattern beneath it.
-      const intensity = Math.round(128 + advected * 160);
-      const i = p.i;
-      data[i] = intensity; data[i + 1] = intensity; data[i + 2] = intensity;
-      data[i + 3] = Math.round(p.mask * 255);
-    }
-    ctx.putImageData(frame, 0, 0);
-  }
-  function tick(now) {
-    request = null;
-    if (reducedMotion.matches || !visible || faded || root.hidden || document.hidden) return;
-    if (now - lastDraw > 33) { draw(); lastDraw = now; }
-    request = requestAnimationFrame(tick);
-  }
-  function synchronize() {
-    if (request !== null) cancelAnimationFrame(request);
-    request = null;
-    if (!reducedMotion.matches && visible && !faded && !root.hidden && !document.hidden) request = requestAnimationFrame(tick);
-  }
-  reducedMotion.addEventListener('change', () => { draw(); synchronize(); });
-  document.addEventListener('visibilitychange', synchronize);
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(entries => {
-      visible = entries[0].isIntersecting;
-      synchronize();
-    }).observe(root);
-  }
-  if ('ResizeObserver' in window) {
-    const observer = new ResizeObserver(layout);
-    observer.observe(header);
-    observer.observe(header.querySelector('.main-nav'));
-    observer.observe(header.querySelector('.site-title'));
-    observer.observe(header.querySelector('.nav-actions'));
-  }
-  window.addEventListener('resize', layout);
-  window.addEventListener('scroll', updateScroll, { passive: true });
-  window.addEventListener('pageshow', () => {
-    // A bfcache restore skips script initialization; refresh both phase and
-    // state in case another page changed the Easter egg in the meantime.
-    try {
-      const saved = JSON.parse(sessionStorage.getItem(sessionKey));
-      if (saved && saved.epoch === epoch) found = saved.found === true;
-    } catch { /* Optional persistence. */ }
-    updateDiscovery();
-    drawField();
-    draw();
-    layout();
-    updateScroll();
-  });
-  header.querySelector('.main-nav').addEventListener('scroll', layout, { passive: true });
-  if (document.fonts) document.fonts.ready.then(layout);
-  if ('MutationObserver' in window) {
-    new MutationObserver(drawField).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-  }
-  systemDark.addEventListener('change', drawField);
-  updateDiscovery();
-  drawField();
-  draw();
-  layout();
-  updateScroll();
+  const recolor = () => { if (active) active.build(); };
+  new MutationObserver(recolor).observe(html, { attributes: true, attributeFilter: ['class'] });
+  systemDark.addEventListener('change', recolor);
+  window.addEventListener('pageshow', e => { if (e.persisted) apply(); });
+  if (document.fonts) document.fonts.ready.then(apply);
+  apply();
 })();

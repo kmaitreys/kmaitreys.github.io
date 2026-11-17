@@ -35,6 +35,15 @@
     }
   }
 
+  function initHeaderSurface() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+    const update = () => header.classList.toggle('is-scrolled', window.scrollY > 4);
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('pageshow', update);
+    update();
+  }
+
   // Helper functions for search
   function escapeHtml(str) {
     if (!str) return '';
@@ -840,6 +849,7 @@
   document.addEventListener('site:page-ready', initPage);
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    initHeaderSurface();
     initSearch();
     initMarginLayout();
     initImageZoom();
