@@ -1,6 +1,6 @@
 /* Isovelocity contours of a flared Keplerian disk, drawn in the page's text
  * colour. On wide screens the disk sits in the right margin and runs off the
- * page edge; on narrower screens it sits behind the header navigation.
+ * page edge; on narrower screens the text overlays the same large disk.
  * A bright channel sweeps from the blue-shifted wing to the red-shifted wing
  * and back, like scrubbing through a line cube.
  *
@@ -11,12 +11,9 @@
 (() => {
   'use strict';
   const bleed = document.getElementById('disk-bleed');
-  const band = document.getElementById('disk-band');
-  if (!bleed && !band) return;
-  const html = document.documentElement;
+  if (!bleed) return;
   const wide = matchMedia('(min-width: 1200px)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const systemDark = matchMedia('(prefers-color-scheme: dark)');
   const TAU = Math.PI * 2;
   const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
   const gauss = x => Math.exp(-x * x / 2);
@@ -68,74 +65,86 @@
     const a = branch(1), b = branch(-1);
     return rEnd < 1 ? [a.concat(b.reverse())] : [a, b];
   }
-  function ring(g, r, side, n = 120) {
-    const pts = [];
-    for (let j = 0; j <= n; j++) pts.push(project(g, r, TAU * j / n, side));
-    return pts;
-  }
-  // Scale and centre that fit the whole disk inside a W x H box.
-  function fitDisk(g, W, H, pad) {
-    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-    for (const side of [1, -1]) for (const p of ring(g, 1, side)) {
-      x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]);
-    }
-    const a = Math.min((W - 2 * pad) / (x1 - x0), (H - 2 * pad) / (y1 - y0));
-    return { a, cx: W / 2 - a * (x0 + x1) / 2, cy: H / 2 - a * (y0 + y1) / 2 };
-  }
-
-  /* ---------- drawing helpers ---------- */
-  function palette() {
-    const css = getComputedStyle(html);
-    const get = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
-    return { ink: get('--text', '#111') };
+  /* ---------- vector drawing helpers ---------- */
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  function element(tag, attributes = {}) {
+    const node = document.createElementNS(SVG_NS, tag);
+    for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value);
+    return node;
   }
   function toPath(lines, cx, cy, a) {
-    const path = new Path2D();
-    for (const pts of lines) {
-      pts.forEach((p, i) => (i ? path.lineTo(cx + a * p[0], cy + a * p[1]) : path.moveTo(cx + a * p[0], cy + a * p[1])));
-    }
-    return path;
+    return lines.map(points => points.map((p, i) =>
+      `${i ? 'L' : 'M'}${(cx + a * p[0]).toFixed(3)},${(cy + a * p[1]).toFixed(3)}`
+    ).join(' ')).join(' ');
   }
+
   /* ---------- one drawing in one mount ---------- */
-  function create(mount, big) {
-    const g = big
-      ? geometry(LOOK.inclination, LOOK.positionAngle, LOOK.flaring)
-      : geometry(Math.max(76, LOOK.inclination), -0.05, 0.13);
-    const canvas = document.createElement('canvas');
-    canvas.setAttribute('aria-hidden', 'true');
-    mount.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    let W = 0, H = 0, a = 1, cx = 0, cy = 0, edge = 0, colors, items = [];
+  function create(mount) {
+    const g = geometry(LOOK.inclination, LOOK.positionAngle, LOOK.flaring);
+    const svg = element('svg', { 'aria-hidden': 'true', focusable: 'false' });
+    mount.appendChild(svg);
+    let items = [];
     let lastDraw = -Infinity, request = null, visible = true;
     const start = performance.now();
 
     function build() {
-      const rect = mount.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = rect.width; H = rect.height;
-      canvas.width = Math.max(1, Math.round(W * dpr));
-      canvas.height = Math.max(1, Math.round(H * dpr));
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-      colors = palette();
-      if (big) {
-        // Centre the disk in the empty margin right of the text column; it runs off the page edge.
-        edge = document.querySelector('.site-wrapper').getBoundingClientRect().right;
+      const { width: W, height: H } = mount.getBoundingClientRect();
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      let a, cx, cy, stops;
+      if (wide.matches) {
+        // Preserve the desktop disk's placement in the right margin.
+        const edge = document.querySelector('.site-wrapper').getBoundingClientRect().right;
         const margin = W - edge;
         a = Math.max(W * 0.36, margin * LOOK.size);
         cx = edge + Math.max(W * 0.1, margin * LOOK.centreX);
         cy = H * LOOK.centreY;
+        stops = [[-480, 0], [-220, 0.06], [-40, 0.18], [80, 0.6], [220, 1]]
+          .map(([dx, opacity]) => [clamp((edge + dx) / W, 0, 1), opacity]);
       } else {
-        ({ a, cx, cy } = fitDisk(g, W, H, 2));
+        // A large disk cropped at the right edge, with text over its quieter left side.
+        a = Math.max(W * 1.1, H * 0.7);
+        cx = W * 0.92;
+        cy = H * 0.4;
+        stops = [[0, 0.025], [0.35, 0.12], [0.7, 0.32], [1, 0.55]];
       }
+
+      const defs = element('defs');
+      function mask(name, gradientAttributes, values) {
+        const id = `${mount.id}-${name}`;
+        const gradient = element('linearGradient', {
+          id: `${id}-gradient`, gradientUnits: 'userSpaceOnUse', ...gradientAttributes,
+        });
+        for (const [offset, opacity] of values) gradient.appendChild(element('stop', {
+          offset, 'stop-color': 'white', 'stop-opacity': opacity,
+        }));
+        const mask = element('mask', {
+          id, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: H,
+        });
+        mask.appendChild(element('rect', {
+          width: W, height: H, fill: `url(#${id}-gradient)`,
+        }));
+        defs.append(gradient, mask);
+        return `url(#${id})`;
+      }
+      const across = element('g', {
+        mask: mask('across', { x1: 0, y1: 0, x2: W, y2: 0 }, stops),
+        fill: 'none', stroke: 'currentColor', 'stroke-linecap': 'round', 'stroke-linejoin': 'round',
+      });
+      const down = element('g', {
+        mask: mask('down', { x1: 0, y1: 0, x2: 0, y2: H }, [[0, 1], [0.7, 1], [1, 0]]),
+      });
+      down.appendChild(across);
       items = [];
       for (let k = -CHANNELS; k <= CHANNELS; k++) {
-        items.push({
-          k,
-          front: toPath(contour(g, k * DU, 1), cx, cy, a),
-          back: toPath(contour(g, k * DU, -1), cx, cy, a),
+        const path = side => element('path', {
+          d: toPath(contour(g, k * DU, side), cx, cy, a),
+          'vector-effect': 'non-scaling-stroke',
         });
+        const back = path(-1), front = path(1);
+        across.append(back, front);
+        items.push({ k, front, back });
       }
+      svg.replaceChildren(defs, down);
       lastDraw = -Infinity;
       wake();
     }
@@ -145,31 +154,12 @@
       const centre = reducedMotion.matches
         ? STILL_CHANNEL
         : (CHANNELS + 3) * Math.sin(TAU * t / LOOK.sweepSeconds - 0.5);
-      ctx.clearRect(0, 0, W, H);
-      ctx.strokeStyle = colors.ink;
       for (const item of items) {
         const glow = gauss((item.k - centre) / 1.5);
-        ctx.lineWidth = 0.8;
-        ctx.globalAlpha = 0.3 * LOOK.lineAlpha + 0.3 * LOOK.glow * glow;
-        ctx.stroke(item.back);
-        ctx.lineWidth = 0.9 + 0.6 * LOOK.glow * glow;
-        ctx.globalAlpha = LOOK.lineAlpha + LOOK.glow * glow;
-        ctx.stroke(item.front);
-      }
-      ctx.globalAlpha = 1;
-      if (big) {
-        // A faint watermark behind the text column, dissolving towards the bottom.
-        ctx.globalCompositeOperation = 'destination-in';
-        const across = ctx.createLinearGradient(0, 0, W, 0);
-        const stop = x => clamp(x / W, 0, 1);
-        [[-480, 0], [-220, 0.06], [-40, 0.18], [80, 0.6], [220, 1]].forEach(([dx, alpha]) => {
-          across.addColorStop(stop(edge + dx), `rgba(0,0,0,${alpha})`);
-        });
-        ctx.fillStyle = across; ctx.fillRect(0, 0, W, H);
-        const down = ctx.createLinearGradient(0, 0, 0, H);
-        down.addColorStop(0.7, 'rgba(0,0,0,1)'); down.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = down; ctx.fillRect(0, 0, W, H);
-        ctx.globalCompositeOperation = 'source-over';
+        item.back.setAttribute('stroke-width', '0.8');
+        item.back.setAttribute('stroke-opacity', 0.3 * LOOK.lineAlpha + 0.3 * LOOK.glow * glow);
+        item.front.setAttribute('stroke-width', 0.9 + 0.6 * LOOK.glow * glow);
+        item.front.setAttribute('stroke-opacity', LOOK.lineAlpha + LOOK.glow * glow);
       }
     }
 
@@ -204,12 +194,12 @@
   /* ---------- mounting ---------- */
   let active = null, mounted = null;
   function apply() {
-    const mount = wide.matches && bleed ? bleed : band;
+    const mount = bleed;
     if (active && mount === mounted) { active.build(); return; }
     if (active) active.destroy();
     active = null;
     mounted = mount;
-    if (mount && mount.getBoundingClientRect().width > 0) active = create(mount, mount === bleed);
+    if (mount && mount.getBoundingClientRect().width > 0) active = create(mount);
   }
   let resizeTimer = null, lastWidth = window.innerWidth;
   window.addEventListener('resize', () => {
@@ -218,9 +208,6 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(apply, 80);
   });
-  const recolor = () => { if (active) active.build(); };
-  new MutationObserver(recolor).observe(html, { attributes: true, attributeFilter: ['class'] });
-  systemDark.addEventListener('change', recolor);
   window.addEventListener('pageshow', e => { if (e.persisted) apply(); });
   if (document.fonts) document.fonts.ready.then(apply);
   apply();

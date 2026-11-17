@@ -1,5 +1,4 @@
-{{/* Disk contours. The drawing goes in #disk-bleed on wide screens and in
-     #disk-band (layouts/partials/header.html) on narrower ones. */}}
-<div class="disk-bleed" id="disk-bleed"></div>
+{{/* Vector disk contours behind the header and introduction at every width. */}}
+<div class="disk-bleed" id="disk-bleed" aria-hidden="true"></div>
 {{ $diskJs := resources.Get "js/disk-kinematics.js" }}
 <script src="{{ $diskJs.RelPermalink }}" defer></script>
